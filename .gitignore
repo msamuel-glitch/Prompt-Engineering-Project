@@ -1,0 +1,39 @@
+# macOS and local editor settings
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets (a documented example may be committed later)
+.env
+.env.*
+!.env.example
+
+# Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Frontend dependencies and build output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Runtime data and private course materials
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+data/local/
+backend/uploads/
+backend/exports/
+
+# Logs
+*.log

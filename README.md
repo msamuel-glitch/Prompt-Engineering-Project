@@ -1,57 +1,126 @@
-=> web app that turns long course slides and PDFs into editable 2-page study sheets, with flashcards, a quiz and a subject library.
-Project at a glance
-Goal
-Save students time summarising courses and help them memorise
-Users
-University students revising several subjects
-Input
-PowerPoint (PPTX) and PDF courses, 20+ pages
-Output
-Styled HTML study sheets, printable as 2-page PDFs
+# Prompt Engineering Project
 
-Features
-Core
-Import and extraction of PPTX and PDF files, keeping titles and slide or page numbers.
-AI summary that fits on 2 A4 pages, with a source reference (slide or page) on each section.
-Styled HTML sheet with a consistent visual identity.
-Editing after generation: change text, add, remove and reorder sections, revert to the AI version.
-PDF export through the browser's print function.
-Flashcards generated from each section.
-AI quiz and confidence score per section, with a "review" badge on weak sections.
-Subject tags and library: tags suggested by the AI and editable, library filterable by subject.
-Bonus : subject-specific templates (maths, finance, marketing, data), spaced repetition, full-text search, likely exam questions, course gap detection.
-Architecture
-Each sheet is stored as structured JSON; the HTML view, PDF, flashcards and quiz are all derived from it.
+Turn long course PDFs and PowerPoint slides into editable, printable study sheets
+with flashcards, quizzes and a subject library.
 
+**Status: project definition and repository preparation.** The repository contains
+planning documents and folder guidance. Application code, installation commands
+and a working demo will be added in later milestones.
 
+## Why we are building this
 
-Layer
-Tool
-Frontend
-React + Vite (TypeScript), Tiptap editor
-Backend
-Python, FastAPI, Pydantic
-Extraction
-python-pptx, pdfplumber
-AI
-Claude API with structured output
-Database
-SQLite
-PDF export
-window.print() + print CSS
+University students revising several subjects need to condense large amounts of
+course material and decide what to practise. Preparing summaries manually takes
+time that could otherwise be spent studying.
 
-Steps
-Prepare: install the tools, create the API key, gather 6 to 10 real courses as test data.
-Set up the repo: protected main branch, backend and frontend scaffolding, a CLAUDE.md with shared conventions, a GitHub Projects board.
-Freeze the contracts: Pydantic schemas (sheet, section, flashcard, quiz), API endpoints stubbed with fake data, TypeScript types generated from the API.
-Build the modules in parallel: extraction, AI prompts, sheet design and print CSS, backend and editing, library, flashcards and quiz pages.
-Integrate the pipeline one link at a time, from upload to library.
-Test and tune: summary quality, 2-page fit, error cases (scanned PDF, API down, very long course), feedback from outside students.
-Freeze features, polish and prepare the demo, with a recorded video as backup.
-Add bonus features if time allows.
-What we need
-Accounts: a GitHub account per member, an Anthropic API key with a spending limit, Claude Code.
-Software: Git, Python 3.11+, Node.js 20+, VS Code.
-Libraries: python-pptx, pdfplumber, FastAPI, Pydantic, Anthropic SDK, React, Vite, Tiptap, openapi-typescript.
-Test data: real courses in PPTX and PDF, across several subjects.
-Budget: a small amount of API credit for development and testing.
+This project aims to help students create a concise revision resource from their
+own course files, check it against the source, adapt it to their needs and test
+their understanding. Whether it saves time and produces useful summaries will be
+evaluated with real course samples and student feedback.
+
+## The intended experience
+
+1. **Upload a course.** Start with a PDF or PPTX, including courses of 20+ pages
+   or slides.
+2. **Generate a study sheet.** Receive a structured summary designed to fit two
+   A4 pages, with page or slide references on each section.
+3. **Review and edit.** Change the text, add or remove sections, reorder content
+   or restore the original AI version.
+4. **Revise actively.** Study section-based flashcards and take a quiz to identify
+   topics that need another review.
+5. **Save and return.** Organize sheets by subject, reopen them from the library
+   and use browser printing to export a PDF.
+
+## Planned scope
+
+The first complete release includes all of the following core features. They will
+be built in smaller milestones, starting with the upload-to-sheet flow.
+
+| Area | Core requirement |
+| --- | --- |
+| Import | Extract PDF and PPTX content while retaining titles and page or slide numbers. |
+| Summary | Generate a concise study sheet with a source reference for every section. |
+| Presentation | Render a consistent HTML layout designed for two A4 pages. |
+| Editing | Edit text, add, remove and reorder sections, and restore the AI version. |
+| Export | Print or save the sheet as a PDF through the browser. |
+| Flashcards | Generate revision cards from each section. |
+| Quiz and review | Generate a quiz, show a section-level score and flag weak sections for review. The meaning of the requested confidence score is still to be defined. |
+| Library | Suggest editable subject tags and filter saved sheets by subject. |
+
+**Optional extensions:** subject-specific templates for maths, finance, marketing
+and data; spaced repetition; full-text search; likely exam questions; and course
+gap detection. These follow completion and evaluation of the core release.
+
+See the [project background](docs/PROJECT_BRIEF.md) for acceptance criteria,
+assumptions and decisions that remain open.
+
+## Planned architecture
+
+Each study sheet is represented as structured JSON. The HTML view, printed PDF,
+flashcards and quizzes derive from that shared representation so that they can
+remain tied to the same sections and source references.
+
+The intended flow is:
+
+```text
+PDF / PPTX → extraction with source references → AI generation → validation
+                                                                     ↓
+                                                        saved study-sheet JSON
+                                                                     ↓
+                                                editor · print · cards · quiz
+```
+
+| Layer | Technology from the project brief |
+| --- | --- |
+| Frontend | React, Vite and TypeScript |
+| Editor | Tiptap |
+| Backend and validation | Python, FastAPI and Pydantic |
+| Course extraction | python-pptx and pdfplumber |
+| AI generation | Claude API via the Anthropic SDK, using structured output |
+| Database | SQLite |
+| API types | openapi-typescript, generated from the backend's OpenAPI schema |
+| PDF export | `window.print()` and print CSS |
+
+AI calls and credentials belong in the backend. The exact data contracts, model,
+dependency versions and behavior after edits will be defined before integration.
+
+## Repository guide
+
+| Path | Purpose |
+| --- | --- |
+| [backend/](backend/README.md) | API, extraction, AI integration and persistence |
+| [frontend/](frontend/README.md) | User interface, editing and print styles |
+| [prompts/](prompts/README.md) | Reusable prompts, expected outputs and evaluation examples |
+| [data/](data/README.md) | Guidance for local course samples and evaluation data |
+| [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) | Product background, scope boundaries, acceptance criteria and open decisions |
+| [docs/PLAN.md](docs/PLAN.md) | Milestones, completion checks and progress |
+| [CLAUDE.md](CLAUDE.md) | Shared development conventions |
+
+## How we will work
+
+Start with the project background, resolve the decisions needed for the next
+milestone, and then follow the [work plan](docs/PLAN.md):
+
+1. Define the project and organize the repository.
+2. Set up the development environment, team workflow and application skeletons.
+3. Agree on the data schemas and API contracts using sample responses.
+4. Connect upload, extraction, AI generation and saving.
+5. Add editing, print layout and the subject library.
+6. Add flashcards, quizzes and section review feedback.
+7. Evaluate with real courses, gather feedback and prepare the demo.
+
+Keep changes small, check each milestone against its expected result, and record
+progress before moving on. Bonus features come after a stable core demo.
+
+## Preparation for development
+
+The original brief calls for Git, Python 3.11+, Node.js 20+, VS Code and Claude
+Code, along with a GitHub account per team member. Exact supported runtime and
+dependency versions will be selected during setup.
+
+Development also needs an Anthropic API key with a spending limit, a small API
+budget, and 6–10 PDF/PPTX courses across several subjects for evaluation. Keep
+credentials out of Git and local course files under the ignored `data/local/`
+directory.
+
+Installation and run instructions will be documented once the applications exist.
