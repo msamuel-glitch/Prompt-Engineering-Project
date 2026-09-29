@@ -18,6 +18,16 @@ own course files, check it against the source, adapt it to their needs and test
 their understanding. Whether it saves time and produces useful summaries will be
 evaluated with real course samples and student feedback.
 
+## Team
+
+| Member | GitHub account | Main responsibility |
+| --- | --- | --- |
+| TODO | TODO | TODO |
+
+Responsibilities are one of the pre-development decisions in
+[PLAN.md](docs/PLAN.md). Every member reviews pull requests and should be able to
+explain the whole project.
+
 ## The intended experience
 
 1. **Upload a course.** Start with a PDF or PPTX, including courses of 20+ pages
@@ -92,8 +102,10 @@ dependency versions and behavior after edits will be defined before integration.
 | [frontend/](frontend/README.md) | User interface, editing and print styles |
 | [prompts/](prompts/README.md) | Reusable prompts, expected outputs and evaluation examples |
 | [data/](data/README.md) | Guidance for local course samples and evaluation data |
+| [outputs/](outputs/README.md) | AI outputs kept as evidence for prompt evaluations |
 | [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) | Product background, scope boundaries, acceptance criteria and open decisions |
 | [docs/PLAN.md](docs/PLAN.md) | Milestones, completion checks and progress |
+| [docs/JOURNAL.md](docs/JOURNAL.md) | Dated log of decisions, AI usage and problems encountered |
 | [CLAUDE.md](CLAUDE.md) | Shared development conventions |
 
 ## How we will work
@@ -112,11 +124,14 @@ milestone, and then follow the [work plan](docs/PLAN.md):
 Keep changes small, check each milestone against its expected result, and record
 progress before moving on. Bonus features come after a stable core demo.
 
-## Preparation for development
+## Installation / access
 
-The original brief calls for Git, Python 3.11+, Node.js 20+, VS Code and Claude
-Code, along with a GitHub account per team member. Exact supported runtime and
-dependency versions will be selected during setup.
+There is nothing to install or run yet.
+
+To prepare for development, the original brief calls for Git, Python 3.11+,
+Node.js 20+, VS Code and Claude Code, along with a GitHub account per team
+member. Exact supported runtime and dependency versions will be selected during
+setup.
 
 Development also needs an Anthropic API key with a spending limit, a small API
 budget, and 6–10 PDF/PPTX courses across several subjects for evaluation. Keep
@@ -124,3 +139,47 @@ credentials out of Git and local course files under the ignored `data/local/`
 directory.
 
 Installation and run instructions will be documented once the applications exist.
+
+## AI usage
+
+AI has two roles in this project.
+
+**In the product.** The backend will send extracted course text to the Claude API
+to produce the study sheet and, later, flashcards, quiz questions and subject
+tags. Each prompt is versioned in [prompts/](prompts/README.md) with its
+evaluation criteria, so that every change is compared with the previous version
+on the same test courses.
+
+**In the development process.** We use AI assistants to plan, document and write
+code. We review what they produce before committing it and record significant
+uses in the [project journal](docs/JOURNAL.md): what was asked, what was kept,
+what was changed and why. Commits prepared with Claude Code carry a
+`Co-Authored-By` trailer.
+
+| Tool | Role |
+| --- | --- |
+| Claude API | Planned: generation of study sheets and study aids in the backend |
+| Claude Code | Repository audit against the course guidelines, documentation updates and the first study-sheet prompt (29 Sept.) |
+| TODO | Other assistants used by team members |
+
+## Main challenges
+
+Implementation has not started, so this section will grow during the project.
+Details are kept in the [project journal](docs/JOURNAL.md).
+
+- **Shared Git workflow.** The repository started with a single branch named
+  after a team member and no `main` branch. On 29 Sept. we created `main` and
+  started working on feature branches merged through pull requests.
+- **Scope.** The core feature list is broad for the time available in the course.
+  Which features the first demo must include is one of the open decisions in the
+  [project background](docs/PROJECT_BRIEF.md#decisions-to-resolve).
+
+## Final result
+
+No part of the application runs yet. The repository contains the project
+definition and the work plan; [PLAN.md](docs/PLAN.md) tracks progress.
+
+## Future improvements
+
+To be completed at the end of the project. The candidates identified so far are
+the optional extensions listed under [Planned scope](#planned-scope).
