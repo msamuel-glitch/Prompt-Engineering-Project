@@ -24,15 +24,24 @@ class Settings:
     fixture_path: Path
 
 
+def setting(name: str, default: str) -> str:
+    """Read a variable, treating an empty value as absent.
+
+    A key left blank in .env, as .env.example shows the optional ones, reaches
+    os.getenv as "" rather than None, so a plain default would never apply.
+    """
+    return os.getenv(name) or default
+
+
 def get_settings() -> Settings:
     return Settings(
-        generator=os.getenv("STUDY_SHEET_GENERATOR", "claude"),
-        claude_model=os.getenv("CLAUDE_MODEL", "claude-opus-5-5"),
-        prompt_version=os.getenv("STUDY_SHEET_PROMPT_VERSION", "v2"),
+        generator=setting("STUDY_SHEET_GENERATOR", "claude"),
+        claude_model=setting("CLAUDE_MODEL", "claude-opus-5-5"),
+        prompt_version=setting("STUDY_SHEET_PROMPT_VERSION", "v2"),
         has_api_key=bool(
             os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN")
         ),
         # Saved sheets live outside Git: data/ is ignored, like local courses.
-        db_path=Path(os.getenv("STUDY_SHEET_DB", BACKEND_DIR / "data" / "sheets.db")),
-        fixture_path=Path(os.getenv("STUDY_SHEET_FIXTURE", DEFAULT_FIXTURE)),
+        db_path=Path(setting("STUDY_SHEET_DB", str(BACKEND_DIR / "data" / "sheets.db"))),
+        fixture_path=Path(setting("STUDY_SHEET_FIXTURE", str(DEFAULT_FIXTURE))),
     )
