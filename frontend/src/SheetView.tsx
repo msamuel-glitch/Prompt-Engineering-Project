@@ -12,7 +12,9 @@ export function SheetView({ result }: Props) {
   const origin =
     result.generator === 'fake'
       ? 'placeholder sheet, no AI'
-      : `${result.generator}, prompt ${result.prompt_version}`
+      : result.generator === 'fixture'
+        ? `recorded sheet, prompt ${result.prompt_version}, no AI call`
+        : `${result.generator}, prompt ${result.prompt_version}`
   const fit = estimateFit(sheet)
   const percentage = Math.round(fit.ratio * 100)
 

@@ -11,6 +11,7 @@ from app.extraction import ExtractionError, UnsupportedFileError, extract_course
 from app.generation import (
     ClaudeSheetGenerator,
     FakeSheetGenerator,
+    FixtureSheetGenerator,
     GenerationError,
     SheetGenerator,
 )
@@ -29,9 +30,16 @@ def get_generator() -> SheetGenerator:
     settings = get_settings()
     if settings.generator == "fake":
         return FakeSheetGenerator()
+    if settings.generator == "fixture":
+        try:
+            return FixtureSheetGenerator(settings.fixture_path)
+        except GenerationError as error:
+            raise HTTPException(500, str(error)) from error
     if settings.generator != "claude":
         raise HTTPException(
-            500, 'STUDY_SHEET_GENERATOR must be "claude" or "fake" in backend/.env.'
+            500,
+            'STUDY_SHEET_GENERATOR must be "claude", "fixture" or "fake" in '
+            "backend/.env.",
         )
     if not settings.has_api_key:
         raise HTTPException(

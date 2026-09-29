@@ -1,6 +1,9 @@
-"""Turn course text into a study sheet, with Claude or with a placeholder."""
+"""Turn course text into a study sheet, with Claude, a recording, or a placeholder."""
 
+import hashlib
+import json
 import logging
+from pathlib import Path
 from typing import Protocol
 
 import anthropic
@@ -111,3 +114,46 @@ class FakeSheetGenerator:
                 Section(title=title, points=rest[:3] or [title], sources=[unit.number])
             )
         return StudySheet(title=units[0].text.splitlines()[0], sections=sections)
+
+
+def course_signature(course: Course) -> str:
+    """Identify a course by the exact text that would be sent to the model."""
+    digest = hashlib.sha256(course.to_prompt_text().encode("utf-8")).hexdigest()
+    return f"sha256:{digest}"
+
+
+class FixtureSheetGenerator:
+    """Serve a sheet recorded earlier, for the one course it was recorded from.
+
+    It exists so the application can be shown with real content while no API key
+    is available. It is not an AI call and does not stand in for one: a sheet
+    recorded from another course would say nothing about the one uploaded, so
+    any other course is refused rather than answered with the wrong sheet.
+
+    The recording carries the model and the interface that produced it, which
+    the API returns as the generator so nothing presents it as a live call.
+    """
+
+    name = "fixture"
+
+    def __init__(self, path: Path):
+        try:
+            record = json.loads(path.read_text(encoding="utf-8"))
+            self.prompt_version = record["recorded"]["prompt_version"]
+            self._signature = record["course_signature"]
+            self._sheet = StudySheet.model_validate(record["sheet"])
+        except (OSError, ValueError, KeyError) as error:
+            raise GenerationError(
+                f"The recorded sheet {path} could not be read: {error}"
+            ) from error
+        self._name = path.name
+
+    def generate(self, course: Course) -> StudySheet:
+        if course_signature(course) != self._signature:
+            raise GenerationError(
+                f"The recorded sheet in {self._name} was made from a different "
+                "course, so it says nothing about this one. Upload the course it "
+                "was recorded from, or set STUDY_SHEET_GENERATOR to claude for a "
+                "real summary or to fake for a placeholder."
+            )
+        return self._sheet.model_copy(deep=True)

@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 PROMPTS_DIR = BACKEND_DIR.parent / "prompts"
+OUTPUTS_DIR = BACKEND_DIR.parent / "outputs"
+DEFAULT_FIXTURE = OUTPUTS_DIR / "study-sheet" / "v2" / "synthetic_regression_run1.json"
 
 load_dotenv(BACKEND_DIR / ".env")
 
@@ -19,6 +21,7 @@ class Settings:
     prompt_version: str
     has_api_key: bool
     db_path: Path
+    fixture_path: Path
 
 
 def get_settings() -> Settings:
@@ -31,4 +34,5 @@ def get_settings() -> Settings:
         ),
         # Saved sheets live outside Git: data/ is ignored, like local courses.
         db_path=Path(os.getenv("STUDY_SHEET_DB", BACKEND_DIR / "data" / "sheets.db")),
+        fixture_path=Path(os.getenv("STUDY_SHEET_FIXTURE", DEFAULT_FIXTURE)),
     )

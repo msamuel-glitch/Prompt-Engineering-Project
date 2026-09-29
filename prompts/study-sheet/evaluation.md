@@ -105,12 +105,16 @@ Average over all courses and runs.
 
 | Criterion | v1 | v2 | v3 |
 | --- | --- | --- | --- |
-| Coverage | – | | |
-| Faithfulness | – | | |
-| Source references | – | | |
-| Length | – | | |
-| Format | – | | |
-| Consistency | – | | |
+| Coverage | – | 5 \* | |
+| Faithfulness | – | 5 \* | |
+| Source references | – | 5 \* | |
+| Length | – | 5 \* | |
+| Format | – | 5 \* | |
+| Consistency | – | not scored \* | |
+
+\* One run on S1 only, produced and scored outside the protocol. These are not
+averages and should not be compared with a properly run v1 column until they
+have been re-scored by someone who did not produce them. See the observations.
 
 ### Detailed scores
 
@@ -119,14 +123,46 @@ Average over all courses and runs.
 | v1 | S1 | 1 | | | | | | | | | |
 | v1 | S1 | 2 | | | | | | | | | |
 | v1 | S1 | 3 | | | | | | | | | |
+| v2 | S1 | 1 | `claude-opus-5` / Claude Code session, **not** the application | 30 Sept. | 5 | 5 | 5 | 414 | 5 | 5 | Provisional, see observations. Output: [`outputs/study-sheet/v2/synthetic_regression_run1.json`](../../outputs/study-sheet/v2/synthetic_regression_run1.json) |
 
 Consistency per course and version:
 
 | Version | Course | Consistency | Notes |
 | --- | --- | --- | --- |
 | v1 | S1 | | |
+| v2 | S1 | not scored | Consistency needs three runs; there is one. |
 
 ### Observations and next change
 
 - **v1:** to be written after the evaluation (main failures, examples, change
   planned for v2).
+
+- **v2, one run, provisional.** The recorded run covers all eight S1 key points,
+  gives every section exactly one source slide, and cites none of the three
+  traps. It is 414 words, well under the 900-word target and shorter than the
+  course, as a sheet on a short course should be. The application's automatic
+  checks raise no warning on it.
+
+  Two limits decide how much this proves, and neither is small:
+
+  1. **It did not come from the application.** It was produced in a Claude Code
+     session with `claude-opus-5`, while the application would use
+     `claude-opus-5-5` with effort `medium` and `max_tokens` 16,000. It shows
+     what the v2 prompt text asks for. It does not show that
+     `backend/app/generation.py` works against the live API, which nothing has
+     shown yet.
+  2. **It was scored by the model that produced it.** The protocol asks for
+     scoring "preferably by a member who did not write the prompt", and this is
+     the exact conflict that rule exists to prevent. A teammate should re-score
+     it before these numbers are used for anything.
+
+  Replace this row with three real application runs as soon as an API key is
+  available.
+
+- **The traps are not caught by the automatic checks.** Extraction finds text on
+  all twelve slides of S1, including slide 6 ("Voir le graphique ci-dessous") and
+  slide 12 ("Questions ?"). `course.empty_units` is therefore empty, so
+  `checks.py` would not warn about a section citing either of them, nor about
+  slide 11's exam logistics. Only human review catches them. Catching them
+  automatically would mean judging how much a slide says rather than whether it
+  says anything, which is a decision for the team rather than a bug.

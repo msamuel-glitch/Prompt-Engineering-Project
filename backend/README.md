@@ -36,7 +36,8 @@ Git: never commit it.
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `ANTHROPIC_API_KEY` | none | Key used to call Claude. Create it with a spending limit. |
-| `STUDY_SHEET_GENERATOR` | `claude` | `fake` builds a placeholder sheet from the course text, with no AI call and no cost. Useful to work on the interface. |
+| `STUDY_SHEET_GENERATOR` | `claude` | `fake` builds a placeholder sheet from the course text, with no AI call and no cost, to work on the interface. `fixture` serves a sheet recorded earlier for the one course it was recorded from, to demonstrate the application without a key. |
+| `STUDY_SHEET_FIXTURE` | `outputs/study-sheet/v2/synthetic_regression_run1.json` | The recording served by the `fixture` generator. |
 | `CLAUDE_MODEL` | `claude-opus-5-5` | Model that writes the sheets. `claude-sonnet-5` costs less than half as much; compare them with the evaluation before switching. |
 | `STUDY_SHEET_PROMPT_VERSION` | `v2` | Prompt file used from `prompts/study-sheet/`. It must ask for the structured output of `app/schemas.py`. |
 | `STUDY_SHEET_DB` | `data/sheets.db` | SQLite file holding the saved sheets. Ignored by Git; delete it to empty the library. |
@@ -81,6 +82,18 @@ by FastAPI is at http://127.0.0.1:8000/docs, where each route can be tried.
 
 Courses longer than 300,000 characters are refused to bound the cost of a
 request; the strategy for long courses is still an open decision.
+
+## Demonstrating without an API key
+
+`STUDY_SHEET_GENERATOR=fixture` serves the sheet recorded in
+`outputs/study-sheet/v2/`, which is real content rather than the placeholder the
+`fake` generator builds. It is a recording, not a call: the API returns
+`fixture` as the generator and the interface says so on the sheet.
+
+A recording is tied to the course it was made from, identified by a hash of the
+exact text that would be sent to the model. Uploading any other course is
+refused with an explanation, because a sheet recorded from one course says
+nothing about another.
 
 ## How a sheet is kept
 
