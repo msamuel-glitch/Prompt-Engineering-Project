@@ -10,6 +10,24 @@ Current milestone: **1 — Project definition and repository organization**.
 Next action: resolve the pre-development decisions in
 [PROJECT_BRIEF.md](PROJECT_BRIEF.md) before beginning milestone 2.
 
+## Prompt track (in parallel with milestones 2–4)
+
+Prompt experiments do not need the application: they run on course text with
+page or slide markers. See [prompts/](../prompts/README.md).
+
+- [x] Write study-sheet prompt v1 (baseline), its evaluation protocol and a
+      synthetic test course (29 Sept.).
+- [ ] Choose 2–3 real courses in `data/local/` and list their key points before
+      running any prompt on them.
+- [ ] Evaluate v1 on the synthetic and real courses; record scores and failures.
+- [ ] Write v2 from the observed failures and compare it with v1 on the same
+      courses.
+- [ ] Reproduce and document at least one LLM failure mode relevant to the
+      project, for example invented source references or instructions hidden in
+      an uploaded course.
+- [ ] Use the retained prompt in the backend once the upload-to-sheet pipeline
+      exists (milestone 4).
+
 ## 1. Project definition and repository organization
 
 - [x] Read the project brief and inspect the existing repository.
