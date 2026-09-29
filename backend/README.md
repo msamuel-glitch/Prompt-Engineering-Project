@@ -39,8 +39,9 @@ Git: never commit it.
 | `CLAUDE_MODEL` | `claude-opus-5-5` | Model that writes the sheets. `claude-sonnet-5-5` costs half as much; compare them with the evaluation before switching. |
 | `STUDY_SHEET_PROMPT_VERSION` | `v2` | Prompt file used from `prompts/study-sheet/`. It must ask for the structured output of `app/schemas.py`. |
 
-Without a key and with the `claude` generator, uploads return an error that
-explains what to set.
+The backend reads `.env` when it starts: restart it after changing the file
+(`--reload` only watches Python files). Without a key and with the `claude`
+generator, uploads return an error that explains what to set.
 
 ## Run
 
