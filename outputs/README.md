@@ -8,6 +8,10 @@ prompt versions without running them again.
   `outputs/study-sheet/v1/synthetic_regression_run1.md`.
 - Start each file with the model, the interface (claude.ai, API, etc.), relevant
   settings and the date, then paste the output unchanged.
+- Sheets downloaded from the application are JSON files that already record the
+  model and prompt version: save them unchanged as
+  `<example>_run<N>.json`, for example
+  `outputs/study-sheet/v2/synthetic_regression_run1.json`.
 - Outputs generated from private course files stay in `data/local/`, which is
   ignored by Git. Record only their scores and observations in the evaluation
   file of the prompt concerned.

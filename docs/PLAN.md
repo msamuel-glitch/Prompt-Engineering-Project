@@ -6,9 +6,11 @@ Work through the milestones in order. For each task, agree on the expected resul
 implement a small change, run the relevant checks, and record the outcome here.
 Use focused commits and reviewable pull requests once the team workflow is set up.
 
-Current milestone: **1 — Project definition and repository organization**.
-Next action: resolve the pre-development decisions in
-[PROJECT_BRIEF.md](PROJECT_BRIEF.md) before beginning milestone 2.
+Current milestone: **4 — Upload-to-sheet pipeline**. The flow works from upload
+to display, but sheets are not saved and the prompt has not been evaluated.
+Open items remain in milestones 1–3.
+Next action: add an Anthropic API key (milestone 2), then run the prompt
+evaluation (prompt track below).
 
 ## Prompt track (in parallel with milestones 2–4)
 
@@ -17,16 +19,17 @@ page or slide markers. See [prompts/](../prompts/README.md).
 
 - [x] Write study-sheet prompt v1 (baseline), its evaluation protocol and a
       synthetic test course (29 Sept.).
+- [x] Write v2 (structured output), required by the application, which reads
+      its prompt from `prompts/study-sheet/` (29 Sept.).
 - [ ] Choose 2–3 real courses in `data/local/` and list their key points before
       running any prompt on them.
-- [ ] Evaluate v1 on the synthetic and real courses; record scores and failures.
-- [ ] Write v2 from the observed failures and compare it with v1 on the same
-      courses.
+- [ ] Evaluate v1 and v2 on the synthetic and real courses; record scores and
+      failures.
+- [ ] Write the next version from the observed failures and compare it with the
+      previous one on the same courses.
 - [ ] Reproduce and document at least one LLM failure mode relevant to the
       project, for example invented source references or instructions hidden in
       an uploaded course.
-- [ ] Use the retained prompt in the backend once the upload-to-sheet pipeline
-      exists (milestone 4).
 
 ## 1. Project definition and repository organization
 
@@ -70,24 +73,27 @@ applications, reach the API health endpoint and build the frontend.
 ## 3. Freeze the data and API contracts
 
 - [ ] Define Pydantic schemas for sheets, sections, source references, flashcards,
-      quizzes and subject tags.
+      quizzes and subject tags (sheets, sections and source references done).
 - [ ] Define how original AI content and student edits are stored and restored.
 - [ ] Agree on confidence scoring, weak-section rules, answer checking and the
       minimum content required for a useful two-page summary.
-- [ ] Define API routes and return schema-valid fake data.
-- [ ] Generate TypeScript types from the OpenAPI schema.
+- [ ] Define API routes and return schema-valid fake data (study-sheet route and
+      fake generator done; flashcard, quiz and tag routes to come).
+- [x] Generate TypeScript types from the OpenAPI schema.
 
 Completion check: the frontend displays a fake sheet using the agreed API shape;
 the team has one documented contract for each core feature.
 
 ## 4. Build the upload-to-sheet pipeline
 
-- [ ] Extract PDF and PPTX text while preserving titles and page/slide identifiers.
-- [ ] Detect unsupported files, empty extraction and scanned PDFs that need OCR;
+- [x] Extract PDF and PPTX text while preserving titles and page/slide identifiers.
+- [x] Detect unsupported files, empty extraction and scanned PDFs that need OCR;
       communicate the limitation clearly before proceeding with generation.
-- [ ] Implement and evaluate the summary prompt with structured Claude output.
-- [ ] Validate the returned data and source references, then persist the sheet.
-- [ ] Connect upload, extraction, generation and display one link at a time.
+- [ ] Implement and evaluate the summary prompt with structured Claude output
+      (implemented with prompt v2; not evaluated yet).
+- [ ] Validate the returned data and source references, then persist the sheet
+      (validation and automatic checks done; persistence not started).
+- [x] Connect upload, extraction, generation and display one link at a time.
 
 Completion check: representative PDF and PPTX courses produce saved, readable
 study sheets with traceable source references.
@@ -136,3 +142,4 @@ likely exam questions and course gap detection.
 | --- | --- | --- |
 | 1 | Repository layout and conventions added; README rewritten and project background documented locally. Application implementation has not started. | Resolve pre-development decisions in PROJECT_BRIEF.md, then begin development setup. |
 | 1–2 | 29 Sept.: `main` created, empty test file removed, README completed with the sections required by the course guidelines, project journal started. | Owner: make `main` the default and protected branch. Team: fill in names and roles in the README. |
+| 2–4 | 29 Sept.: backend and frontend skeletons, then the upload-to-sheet flow. It works end to end with the fake generator; the Claude generator is tested against the real SDK with a fake network layer, not yet with a live key. Sheets are not saved. | Add an API key, evaluate prompts v1 and v2, then save sheets in SQLite. |

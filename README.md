@@ -3,10 +3,11 @@
 Turn long course PDFs and PowerPoint slides into editable, printable study sheets
 with flashcards, quizzes and a subject library.
 
-**Status: development setup.** The application skeletons run: a FastAPI backend
-with a health endpoint and its tests, and a React page that checks the API. See
-[backend/](backend/README.md) and [frontend/](frontend/README.md) for the
-commands. No product feature works yet.
+**Status: first feature working.** Upload a PDF or PowerPoint course and get a
+study sheet whose sections cite the pages or slides they come from, with
+automatic checks on those references. Sheets are not saved yet, and editing,
+printing, flashcards, quizzes and the library are still to come. See
+[Final result](#final-result).
 
 ## Why we are building this
 
@@ -127,29 +128,30 @@ progress before moving on. Bonus features come after a stable core demo.
 
 ## Installation / access
 
-There is nothing to install or run yet.
+The application runs locally in two parts, each with its own instructions:
 
-To prepare for development, the original brief calls for Git, Python 3.11+,
-Node.js 20+, VS Code and Claude Code, along with a GitHub account per team
-member. Exact supported runtime and dependency versions will be selected during
-setup.
+1. The [backend](backend/README.md) (Python 3.11+): install, add an Anthropic
+   API key to `backend/.env`, then start it with `uvicorn`.
+2. The [frontend](frontend/README.md) (Node.js 20.19+ or 22.12+): `npm install`,
+   then `npm run dev`, and open http://localhost:5173.
 
-Development also needs an Anthropic API key with a spending limit, a small API
-budget, and 6–10 PDF/PPTX courses across several subjects for evaluation. Keep
-credentials out of Git and local course files under the ignored `data/local/`
-directory.
+Without an API key, set `STUDY_SHEET_GENERATOR=fake` in `backend/.env` to try the
+interface with placeholder sheets, and upload the synthetic course
+`prompts/examples/synthetic_course_regression_fr.pptx`.
 
-Installation and run instructions will be documented once the applications exist.
+Create the API key with a spending limit. Keep credentials out of Git and local
+course files under the ignored `data/local/` directory.
 
 ## AI usage
 
 AI has two roles in this project.
 
-**In the product.** The backend will send extracted course text to the Claude API
-to produce the study sheet and, later, flashcards, quiz questions and subject
-tags. Each prompt is versioned in [prompts/](prompts/README.md) with its
-evaluation criteria, so that every change is compared with the previous version
-on the same test courses.
+**In the product.** The backend sends the extracted course text to the Claude API,
+which returns the study sheet as structured data validated against a schema;
+flashcards, quiz questions and subject tags will follow. The application reads
+its prompt from the versioned files in [prompts/](prompts/README.md), where each
+version is documented with its evaluation criteria, so that every change is
+compared with the previous version on the same test courses.
 
 **In the development process.** We use AI assistants to plan, document and write
 code. We review what they produce before committing it and record significant
@@ -159,14 +161,14 @@ what was changed and why. Commits prepared with Claude Code carry a
 
 | Tool | Role |
 | --- | --- |
-| Claude API | Planned: generation of study sheets and study aids in the backend |
-| Claude Code | Repository audit against the course guidelines, documentation updates and the first study-sheet prompt (29 Sept.) |
+| Claude API | Generation of study sheets in the backend (`claude-opus-5-5` by default, structured output) |
+| Claude Code | Repository audit against the course guidelines, documentation, prompts v1 and v2, application skeletons and the upload-to-sheet feature (29 Sept.) |
 | TODO | Other assistants used by team members |
 
 ## Main challenges
 
-Implementation has not started, so this section will grow during the project.
-Details are kept in the [project journal](docs/JOURNAL.md).
+This section will grow during the project. Details are kept in the
+[project journal](docs/JOURNAL.md).
 
 - **Shared Git workflow.** The repository started with a single branch named
   after a team member and no `main` branch. On 29 Sept. we created `main` and
@@ -174,11 +176,26 @@ Details are kept in the [project journal](docs/JOURNAL.md).
 - **Scope.** The core feature list is broad for the time available in the course.
   Which features the first demo must include is one of the open decisions in the
   [project background](docs/PROJECT_BRIEF.md#decisions-to-resolve).
+- **Testing AI features without spending.** The first feature was built before
+  the team had an API key. A fake generator builds placeholder sheets, and the
+  tests run the real Anthropic SDK against a fake network layer, so everything
+  except the model's actual answers could be checked for free.
 
 ## Final result
 
-No part of the application runs yet. The repository contains the project
-definition and the work plan; [PLAN.md](docs/PLAN.md) tracks progress.
+What works today (29 Sept.):
+
+- Uploading a PDF or PPTX course; files without text, such as scanned PDFs, and
+  other formats are refused with an explanation.
+- Generating a study sheet with Claude from prompt v2, as sections of key points
+  that each cite their pages or slides.
+- Automatic checks shown to the student: references outside the file or to pages
+  without text, sections without a source, sheets over 900 words.
+- Downloading the result as JSON, for example to keep evaluation outputs.
+
+Not yet: saving sheets, editing, printing, flashcards, quizzes and the library.
+The generation has not been run with a live API key yet, and the prompts have
+not been evaluated. [PLAN.md](docs/PLAN.md) tracks progress.
 
 ## Future improvements
 
