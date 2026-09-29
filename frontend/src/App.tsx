@@ -5,11 +5,14 @@ import {
   listSheets,
   readSheet,
   restoreSheet,
+  saveSheet,
   setTags,
   type SheetSummary,
   type StoredSheet,
+  type StudySheet,
 } from './api'
 import { Library } from './Library'
+import { SheetEditor } from './SheetEditor'
 import { SheetView } from './SheetView'
 import { TagEditor } from './TagEditor'
 import { UploadForm } from './UploadForm'
@@ -27,6 +30,8 @@ const statusLabels: Record<ApiStatus, string> = {
 function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>('checking')
   const [generating, setGenerating] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState<StoredSheet | null>(null)
   const [library, setLibrary] = useState<SheetSummary[]>([])
@@ -55,23 +60,43 @@ function App() {
     try {
       setOpen(await action())
       await refreshLibrary()
+      return true
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : String(failure))
+      return false
     }
   }
 
   async function handleUpload(file: File) {
     setGenerating(true)
+    setEditing(false)
     setOpen(null)
     await run(() => generateSheet(file))
     setGenerating(false)
   }
 
+  async function handleOpen(id: string) {
+    setEditing(false)
+    await run(() => readSheet(id))
+  }
+
   async function handleDelete(id: string) {
+    if (open?.id === id) {
+      setEditing(false)
+    }
     await run(async () => {
       await deleteSheet(id)
       return open?.id === id ? null : open
     })
+  }
+
+  async function handleSave(id: string, sheet: StudySheet) {
+    setSaving(true)
+    // Stay in the editor if saving failed, so nothing typed is lost.
+    if (await run(() => saveSheet(id, sheet))) {
+      setEditing(false)
+    }
+    setSaving(false)
   }
 
   return (
@@ -85,7 +110,7 @@ function App() {
       <p className="app-intro">
         Upload a course to get a study sheet. Each section shows the pages or slides
         it comes from, so you can check it against the course. Sheets are saved, so
-        you can reopen them from the library below.
+        you can reopen and rework them from the library below.
       </p>
 
       <UploadForm onUpload={handleUpload} disabled={generating} />
@@ -109,13 +134,31 @@ function App() {
               tags={open.tags}
               onSave={(tags) => run(() => setTags(open.id, tags))}
             />
+            {!editing && (
+              <button type="button" onClick={() => setEditing(true)}>
+                Edit this sheet
+              </button>
+            )}
             {open.edited && (
               <button type="button" onClick={() => run(() => restoreSheet(open.id))}>
                 Restore the AI version
               </button>
             )}
           </div>
-          <SheetView result={open} />
+
+          {editing ? (
+            <SheetEditor
+              key={open.id}
+              sheet={open.sheet}
+              sourceType={open.source_type}
+              sourceCount={open.source_count}
+              saving={saving}
+              onSave={(sheet) => handleSave(open.id, sheet)}
+              onCancel={() => setEditing(false)}
+            />
+          ) : (
+            <SheetView result={open} />
+          )}
         </>
       )}
 
@@ -124,7 +167,7 @@ function App() {
         tag={tag}
         openId={open?.id ?? null}
         onTagChange={setTag}
-        onOpen={(id) => run(() => readSheet(id))}
+        onOpen={handleOpen}
         onDelete={handleDelete}
       />
     </main>

@@ -187,3 +187,80 @@
   color: #cf222e;
   margin-left: auto;
 }
+
+.sheet-editor {
+  margin: 1rem 0 0;
+}
+
+.sheet-title-field,
+.section-field label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.sheet-title-field input,
+.section-field input,
+.section-field textarea {
+  font: inherit;
+  font-weight: 400;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.section-field {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem 1rem;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+}
+
+.section-field legend {
+  padding: 0 0.4rem;
+  color: #57606a;
+  font-size: 0.85rem;
+}
+
+.section-controls {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+}
+
+.field-label {
+  display: block;
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+}
+
+.point-field {
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  margin: 0 0 0.4rem;
+}
+
+.point-field textarea {
+  flex: 1;
+  resize: vertical;
+}
+
+.field-warning {
+  margin: 0.4rem 0 0;
+  color: #cf222e;
+  font-size: 0.85rem;
+}
+
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+}
+
+button.danger {
+  color: #cf222e;
+}
