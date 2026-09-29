@@ -62,7 +62,7 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 | `src/index.css` | Design tokens and base element styles: colours, spacing, buttons, fields |
 | `src/main.tsx` | Entry point that mounts the React application |
 | `src/App.tsx` | The shell: which view is showing, and the state shared between them |
-| `src/Nav.tsx` | Site header: the StudyCard mark, the tabs, the connection and generator badges |
+| `src/Nav.tsx` | Site header: the RectoVerso mark, the tabs, the connection and generator badges |
 | `src/Home.tsx` | Landing page: what the application does, how it works and what it does not do |
 | `src/UploadForm.tsx` | File picker and generate button |
 | `src/SheetView.tsx` | Display of a sheet, with the print button and the two-page gauge |

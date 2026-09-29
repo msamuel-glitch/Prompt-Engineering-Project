@@ -265,7 +265,7 @@ function App() {
 
       <footer className="site-footer">
         <p>
-          StudyCard — a prompt-engineering project. Sheets are stored on this
+          RectoVerso — a prompt-engineering project. Sheets are stored on this
           machine only.
         </p>
       </footer>

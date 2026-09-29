@@ -50,7 +50,7 @@ export function Nav({
       <div className="site-bar">
         <button type="button" className="brand" onClick={() => onNavigate('home')}>
           <span className="brand-mark" aria-hidden="true" />
-          StudyCard
+          RectoVerso
         </button>
 
         <nav className="site-nav" aria-label="Sections">

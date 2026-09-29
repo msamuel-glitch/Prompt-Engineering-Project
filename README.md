@@ -1,12 +1,14 @@
 # Prompt Engineering Project
 
-Turn long course PDFs and PowerPoint slides into editable, printable study sheets
-with flashcards, quizzes and a subject library.
+**RectoVerso** turns long course PDFs and PowerPoint slides into editable,
+printable study sheets with flashcards, quizzes and a subject library. The name
+is the promise: a whole lecture, front and back of one sheet.
 
-**Status: first feature working.** Upload a PDF or PowerPoint course and get a
-study sheet whose sections cite the pages or slides they come from, with
-automatic checks on those references. Sheets are not saved yet, and editing,
-printing, flashcards, quizzes and the library are still to come. See
+**Status: the core flow works end to end.** Upload a PDF or PowerPoint course
+and get a study sheet whose sections cite the pages or slides they come from,
+with automatic checks on those references. Save it, correct it, file it under a
+subject, revise it with flashcards and print it on two A4 pages. The quiz is not
+built, and no sheet has yet been generated with a live API key. See
 [Final result](#final-result).
 
 ## Why we are building this
@@ -183,7 +185,7 @@ This section will grow during the project. Details are kept in the
 
 ## Final result
 
-What works today (29 Sept.):
+What works today (30 Sept.):
 
 - Uploading a PDF or PPTX course; files without text, such as scanned PDFs, and
   other formats are refused with an explanation.
@@ -191,11 +193,28 @@ What works today (29 Sept.):
   that each cite their pages or slides.
 - Automatic checks shown to the student: references outside the file or to pages
   without text, sections without a source, sheets over 900 words.
+- Saving every sheet in SQLite, and a library that previews each one and filters
+  them by subject tag.
+- Editing a sheet: rewriting, adding, removing and reordering sections, with the
+  version the AI wrote kept aside and one click to bring it back.
+- Printing on two A4 pages, with an estimate that warns while editing, before a
+  sheet grows past what will fit.
+- Revising with flashcards derived from the sections, so they follow every edit
+  instead of going stale.
 - Downloading the result as JSON, for example to keep evaluation outputs.
 
-Not yet: saving sheets, editing, printing, flashcards, quizzes and the library.
-The generation has not been run with a live API key yet, and the prompts have
-not been evaluated. [PLAN.md](docs/PLAN.md) tracks progress.
+**Not yet: the quiz**, its confidence score and the review badges on weak
+sections. It is the one study aid the brief asks the AI for, so it needs a key.
+
+**No sheet has been generated with a live API key.** The Claude integration is
+written and tested against the SDK with a fake network layer; nothing has proved
+it against the real API. One run of prompt v2 on the synthetic course is
+recorded in [outputs/study-sheet/v2/](outputs/study-sheet/v2/) — produced in a
+Claude Code session rather than by the application, and scored by its own
+author, both of which are stated there. The demonstration mode serves that
+recording so the application can be shown with real content.
+
+[PLAN.md](docs/PLAN.md) tracks progress.
 
 ## Future improvements
 

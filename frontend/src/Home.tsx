@@ -53,7 +53,7 @@ export function Home({ onNavigate, libraryCount }: Props) {
     <div className="home">
       <section className="hero">
         <p className="hero-eyebrow">Revision tool</p>
-        <h1 className="hero-title">StudyCard</h1>
+        <h1 className="hero-title">RectoVerso</h1>
         <p className="hero-lead">
           Turn a long lecture into a two-page study sheet you can check, correct,
           print and revise — with every section linked back to the slide it came
