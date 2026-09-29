@@ -36,7 +36,8 @@ documentation accurately distinguishes planned features from working software.
 - [ ] Establish the team's main branch and branch protection on GitHub. At the
       initial inspection, the remote exposed only mary; main does not yet exist.
 - [ ] Set up a GitHub Projects board with Todo, In progress, In review and Done.
-- [ ] Scaffold FastAPI with a health endpoint and explicit Python dependencies.
+- [x] Scaffold FastAPI with a health endpoint and explicit Python dependencies
+      (pip and a virtual environment, pinned requirements files).
 - [ ] Scaffold React + Vite + TypeScript and commit its dependency lockfile.
 - [ ] Document working install/run/check commands and environment variables.
 - [ ] Configure an Anthropic key with a spending limit, and collect 6–10 local

@@ -3,9 +3,9 @@
 Turn long course PDFs and PowerPoint slides into editable, printable study sheets
 with flashcards, quizzes and a subject library.
 
-**Status: project definition and repository preparation.** The repository contains
-planning documents and folder guidance. Application code, installation commands
-and a working demo will be added in later milestones.
+**Status: development setup.** The backend skeleton runs, with a health endpoint
+and its tests: see [backend/](backend/README.md) for the commands. The frontend
+skeleton comes next. No product feature works yet.
 
 ## Why we are building this
 
