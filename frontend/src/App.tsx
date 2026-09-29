@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import {
   deleteSheet,
   generateSheet,
+  listFolders,
   listSheets,
+  moveSheet,
   readSheet,
   restoreSheet,
   saveSheet,
@@ -43,10 +45,14 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState<StoredSheet | null>(null)
   const [library, setLibrary] = useState<SheetSummary[]>([])
-  const [tag, setTag] = useState('')
+  const [folders, setFolders] = useState<string[]>([])
+  // null shows every sheet, '' the unfiled ones, a name one folder.
+  const [folder, setFolder] = useState<string | null>(null)
 
   const refreshLibrary = useCallback(async () => {
-    setLibrary(await listSheets())
+    const [sheets, names] = await Promise.all([listSheets(), listFolders()])
+    setLibrary(sheets)
+    setFolders(names)
   }, [])
 
   useEffect(() => {
@@ -106,6 +112,13 @@ function App() {
     await run(async () => {
       await deleteSheet(id)
       return open?.id === id ? null : open
+    })
+  }
+
+  async function handleMove(id: string, target: string) {
+    await run(async () => {
+      const moved = await moveSheet(id, target)
+      return open?.id === id ? moved : open
     })
   }
 
@@ -190,9 +203,11 @@ function App() {
         {view === 'library' && (
           <Library
             sheets={library}
-            tag={tag}
+            folders={folders}
+            folder={folder}
             openId={open?.id ?? null}
-            onTagChange={setTag}
+            onFolderChange={setFolder}
+            onMove={handleMove}
             onOpen={handleOpen}
             onDelete={handleDelete}
             onCreate={() => go('upload')}

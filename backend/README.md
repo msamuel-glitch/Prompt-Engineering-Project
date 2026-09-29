@@ -59,11 +59,13 @@ by FastAPI is at http://127.0.0.1:8000/docs, where each route can be tried.
 | --- | --- |
 | `GET /api/health` | Returns `{"status":"ok"}` when the API runs |
 | `POST /api/sheets` | Takes a course file (`file`, PDF or PPTX, up to 30 MB), saves the sheet and returns it |
-| `GET /api/sheets` | The library: saved sheets, newest first. `?tag=` keeps only one subject |
+| `GET /api/sheets` | The library: saved sheets, newest first. `?folder=` keeps one folder, `?folder=` with no value the unfiled ones, `?tag=` one subject tag |
 | `GET /api/sheets/{id}` | One saved sheet |
 | `PUT /api/sheets/{id}/sheet` | Replaces the student's version; the AI version is kept aside |
 | `POST /api/sheets/{id}/restore` | Puts the AI version back as the student's version |
 | `PUT /api/sheets/{id}/tags` | Replaces the subject tags |
+| `PUT /api/sheets/{id}/folder` | Files a sheet in a folder; an empty name unfiles it |
+| `GET /api/folders` | Every folder in use, for the library |
 | `DELETE /api/sheets/{id}` | Removes a sheet from the library |
 
 ## How a sheet is made
@@ -99,6 +101,20 @@ it is not, and content from one course never reaches a sheet about another.
 `GET /api/health` returns the generator in use, which the interface shows next
 to the connection state so a student knows whether to expect a real summary, a
 recording or a placeholder before uploading anything.
+
+## Folders
+
+A folder exists because a sheet is in it. Naming one on a sheet creates it,
+moving the last sheet out makes it disappear, and there is nothing to create or
+delete separately. A sheet is in one folder or none.
+
+Folders and subject tags are different tools kept side by side: a folder is
+where a sheet lives, a tag is something it is about. A sheet can carry several
+tags and sit in one folder.
+
+The `folder` column was added after the first release, so `storage.connect`
+adds it to a database that predates it rather than refusing to open one. A
+student's saved sheets survive the upgrade.
 
 ## How a sheet is kept
 

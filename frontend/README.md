@@ -69,7 +69,8 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 | `src/SheetEditor.tsx` | Form to rewrite, add, remove and reorder the sections |
 | `src/Flashcards.tsx` | Revision mode: one card per section, reveal and shuffle |
 | `src/cards.ts` | Flashcards derived from a sheet, tested in `cards.test.ts` |
-| `src/Library.tsx` | Saved sheets as cards, each previewing its first headings, narrowed by subject |
+| `src/Library.tsx` | Saved sheets as cards, each previewing its first headings, narrowed by folder |
+| `src/FolderPicker.tsx` | Files a sheet in a folder, or names a new one |
 | `src/TagEditor.tsx` | Subject tags of the open sheet |
 | `src/edits.ts` | Operations on a sheet as pure functions, tested in `edits.test.ts` |
 | `src/fit.ts` | Two-page fill estimate, tested in `fit.test.ts` |

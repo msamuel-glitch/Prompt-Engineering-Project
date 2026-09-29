@@ -13,12 +13,55 @@ export interface paths {
         };
         /**
          * List Sheets
-         * @description The subject library: saved sheets, newest first, filtered by tag.
+         * @description The library: saved sheets, newest first, narrowed by folder or tag.
+         *
+         *     `folder=` with an empty value keeps the sheets that are not filed anywhere,
+         *     which is how the interface shows its "Unfiled" group.
          */
         get: operations["list_sheets_api_sheets_get"];
         put?: never;
         /** Create Sheet */
         post: operations["create_sheet_api_sheets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/folders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Folders
+         * @description Every folder in use, so the library can offer them without scanning.
+         */
+        get: operations["list_folders_api_folders_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sheets/{sheet_id}/folder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Move Sheet
+         * @description File a sheet in a folder, creating it by naming it.
+         */
+        put: operations["move_sheet_api_sheets__sheet_id__folder_put"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -132,6 +175,15 @@ export interface components {
             /** File */
             file: string;
         };
+        /** FolderUpdate */
+        FolderUpdate: {
+            /**
+             * Folder
+             * @description Folder to file the sheet in; empty leaves it unfiled
+             * @default
+             */
+            folder: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -197,10 +249,19 @@ export interface components {
              * @description Headings of the first sections, to show what the sheet covers
              */
             preview: string[];
+            /** Folder */
+            folder: string;
             /** Tags */
             tags: string[];
             /** Edited */
             edited: boolean;
+            /**
+             * Generator
+             * @description Model that wrote the sheet, or "fake" for a placeholder
+             */
+            generator: string;
+            /** Prompt Version */
+            prompt_version: string | null;
         };
         /**
          * StoredSheet
@@ -238,6 +299,11 @@ export interface components {
             id: string;
             /** Created At */
             created_at: string;
+            /**
+             * Folder
+             * @description Folder the sheet is filed in, or empty
+             */
+            folder: string;
             /** Tags */
             tags: string[];
             /**
@@ -290,6 +356,7 @@ export interface operations {
         parameters: {
             query?: {
                 tag?: string | null;
+                folder?: string | null;
             };
             header?: never;
             path?: never;
@@ -327,6 +394,61 @@ export interface operations {
         requestBody: {
             content: {
                 "multipart/form-data": components["schemas"]["Body_create_sheet_api_sheets_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredSheet"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_folders_api_folders_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string[];
+                };
+            };
+        };
+    };
+    move_sheet_api_sheets__sheet_id__folder_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sheet_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FolderUpdate"];
             };
         };
         responses: {

@@ -63,6 +63,15 @@ export async function setTags(id: string, tags: string[]): Promise<StoredSheet> 
   return request<StoredSheet>(`/api/sheets/${id}/tags`, sending({ tags }))
 }
 
+/** File a sheet in a folder; an empty name takes it back out. */
+export async function moveSheet(id: string, folder: string): Promise<StoredSheet> {
+  return request<StoredSheet>(`/api/sheets/${id}/folder`, sending({ folder }))
+}
+
+export async function listFolders(): Promise<string[]> {
+  return request<string[]>('/api/folders')
+}
+
 export async function deleteSheet(id: string): Promise<void> {
   return request<void>(`/api/sheets/${id}`, { method: 'DELETE' })
 }

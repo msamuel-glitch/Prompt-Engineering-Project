@@ -33,9 +33,14 @@ CREATE TABLE IF NOT EXISTS sheets (
     prompt_version TEXT,
     original_sheet TEXT NOT NULL,
     current_sheet  TEXT NOT NULL,
-    tags           TEXT NOT NULL
+    tags           TEXT NOT NULL,
+    folder         TEXT NOT NULL DEFAULT ''
 )
 """
+
+# Columns added after the first release. A database made by an earlier version
+# is migrated in place rather than thrown away: these sheets are a student's.
+LATER_COLUMNS = {"folder": "TEXT NOT NULL DEFAULT ''"}
 
 
 class SheetNotFoundError(Exception):
@@ -55,6 +60,7 @@ class Record:
     original_sheet: StudySheet
     current_sheet: StudySheet
     tags: list[str]
+    folder: str
 
     @property
     def edited(self) -> bool:
@@ -87,10 +93,21 @@ def connect(path: Path) -> Iterator[sqlite3.Connection]:
     connection.row_factory = sqlite3.Row
     try:
         connection.execute(SCHEMA)
+        _migrate(connection)
         yield connection
         connection.commit()
     finally:
         connection.close()
+
+
+def _migrate(connection: sqlite3.Connection) -> None:
+    """Add the columns a database made by an earlier version is missing."""
+    present = {
+        row["name"] for row in connection.execute("PRAGMA table_info(sheets)")
+    }
+    for name, definition in LATER_COLUMNS.items():
+        if name not in present:
+            connection.execute(f"ALTER TABLE sheets ADD COLUMN {name} {definition}")
 
 
 def _to_record(row: sqlite3.Row) -> Record:
@@ -106,6 +123,7 @@ def _to_record(row: sqlite3.Row) -> Record:
         original_sheet=StudySheet.model_validate_json(row["original_sheet"]),
         current_sheet=StudySheet.model_validate_json(row["current_sheet"]),
         tags=json.loads(row["tags"]),
+        folder=row["folder"],
     )
 
 
@@ -120,6 +138,7 @@ def save(
     prompt_version: str | None,
     sheet: StudySheet,
     tags: list[str] | None = None,
+    folder: str = "",
 ) -> Record:
     """Store a freshly generated sheet as both the AI version and the current one."""
     record_id = uuid.uuid4().hex
@@ -127,7 +146,13 @@ def save(
     sheet_json = sheet.model_dump_json()
     with connect(path) as connection:
         connection.execute(
-            "INSERT INTO sheets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            """
+            INSERT INTO sheets (
+                id, created_at, file_name, source_type, source_count,
+                empty_units, generator, prompt_version, original_sheet,
+                current_sheet, tags, folder
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
             (
                 record_id,
                 created_at,
@@ -140,6 +165,7 @@ def save(
                 sheet_json,
                 sheet_json,
                 json.dumps(tags or []),
+                folder.strip(),
             ),
         )
     return get(path, record_id)
@@ -186,6 +212,17 @@ def restore(path: Path, record_id: str) -> Record:
     """Put the AI version back as the student's version."""
     record = get(path, record_id)
     return update_sheet(path, record_id, record.original_sheet)
+
+
+def set_folder(path: Path, record_id: str, folder: str) -> Record:
+    """Move a sheet to a folder. An empty name leaves it unfiled."""
+    return _update(path, record_id, "folder", folder.strip())
+
+
+def folders(path: Path) -> list[str]:
+    """Every folder in use, in alphabetical order. Unfiled sheets add none."""
+    names = {record.folder for record in list_all(path) if record.folder}
+    return sorted(names, key=str.casefold)
 
 
 def set_tags(path: Path, record_id: str, tags: list[str]) -> Record:

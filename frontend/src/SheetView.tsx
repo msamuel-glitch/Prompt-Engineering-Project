@@ -29,6 +29,17 @@ export function SheetView({ result }: Props) {
         </button>
       </p>
 
+      {/* A placeholder and a summary look alike once they are rows of sections.
+          Saying so here, above the content, is the only honest place for it. */}
+      {result.generator === 'fake' && (
+        <p className="notice warn" role="note">
+          <strong>This is not a summary.</strong> No AI ran on this course: each
+          section below is the first lines of a page, copied as they are. Set an
+          API key and switch the generator to <code>claude</code> to get a real
+          study sheet.
+        </p>
+      )}
+
       <div className="sheet-actions">
         <button type="button" className="primary" onClick={() => window.print()}>
           Print / save as PDF

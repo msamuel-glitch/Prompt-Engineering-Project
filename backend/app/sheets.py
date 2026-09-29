@@ -16,7 +16,13 @@ from app.generation import (
     SheetGenerator,
 )
 from app.prompts import PromptNotFoundError, load_prompt
-from app.schemas import SheetSummary, StoredSheet, StudySheet, TagsUpdate
+from app.schemas import (
+    FolderUpdate,
+    SheetSummary,
+    StoredSheet,
+    StudySheet,
+    TagsUpdate,
+)
 
 MAX_FILE_BYTES = 30 * 1024 * 1024
 # About 75,000 tokens: bounds the cost of one request. Longer courses need a
@@ -85,6 +91,7 @@ def as_response(record: storage.Record) -> StoredSheet:
         warnings=warnings,
         generator=record.generator,
         prompt_version=record.prompt_version,
+        folder=record.folder,
         tags=record.tags,
         edited=record.edited,
     )
@@ -143,9 +150,18 @@ def create_sheet(
 
 @router.get("/api/sheets", response_model=list[SheetSummary])
 def list_sheets(
-    tag: str | None = None, db_path: Path = Depends(get_db_path)
+    tag: str | None = None,
+    folder: str | None = None,
+    db_path: Path = Depends(get_db_path),
 ) -> list[SheetSummary]:
-    """The subject library: saved sheets, newest first, filtered by tag."""
+    """The library: saved sheets, newest first, narrowed by folder or tag.
+
+    `folder=` with an empty value keeps the sheets that are not filed anywhere,
+    which is how the interface shows its "Unfiled" group.
+    """
+    records = storage.list_all(db_path, tag)
+    if folder is not None:
+        records = [record for record in records if record.folder == folder]
     return [
         SheetSummary(
             id=record.id,
@@ -160,11 +176,29 @@ def list_sheets(
             preview=[
                 section.title for section in record.current_sheet.sections[:3]
             ],
+            folder=record.folder,
             tags=record.tags,
             edited=record.edited,
+            generator=record.generator,
+            prompt_version=record.prompt_version,
         )
-        for record in storage.list_all(db_path, tag)
+        for record in records
     ]
+
+
+@router.get("/api/folders", response_model=list[str])
+def list_folders(db_path: Path = Depends(get_db_path)) -> list[str]:
+    """Every folder in use, so the library can offer them without scanning."""
+    return storage.folders(db_path)
+
+
+@router.put("/api/sheets/{sheet_id}/folder", response_model=StoredSheet)
+def move_sheet(
+    sheet_id: str, update: FolderUpdate, db_path: Path = Depends(get_db_path)
+) -> StoredSheet:
+    """File a sheet in a folder, creating it by naming it."""
+    found(sheet_id, db_path)
+    return as_response(storage.set_folder(db_path, sheet_id, update.folder))
 
 
 @router.get("/api/sheets/{sheet_id}", response_model=StoredSheet)

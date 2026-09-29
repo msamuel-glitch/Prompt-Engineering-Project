@@ -45,6 +45,7 @@ class StoredSheet(StudySheetResponse):
 
     id: str
     created_at: str
+    folder: str = Field(description="Folder the sheet is filed in, or empty")
     tags: list[str]
     edited: bool = Field(
         description="True once the student changed the version the AI wrote"
@@ -65,9 +66,20 @@ class SheetSummary(BaseModel):
     preview: list[str] = Field(
         description="Headings of the first sections, to show what the sheet covers"
     )
+    folder: str
     tags: list[str]
     edited: bool
+    generator: str = Field(
+        description='Model that wrote the sheet, or "fake" for a placeholder'
+    )
+    prompt_version: str | None
 
 
 class TagsUpdate(BaseModel):
     tags: list[str] = Field(description="Subject tags, replacing the current ones")
+
+
+class FolderUpdate(BaseModel):
+    folder: str = Field(
+        default="", description="Folder to file the sheet in; empty leaves it unfiled"
+    )
