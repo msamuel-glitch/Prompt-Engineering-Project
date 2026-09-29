@@ -16,8 +16,12 @@ improved.
    points a good sheet must contain. This list is the reference for coverage; do
    not change it after seeing the outputs.
 3. **Runs.** Three runs per course and version, with the same model and settings
-   for every version. Record the model name, the interface (claude.ai, API) and,
-   through the API, the temperature.
+   for every version. Record the model name and the interface.
+   - v1 asks for free text: paste it into claude.ai with the course text, and
+     select the same model as the application.
+   - v2 and later versions run in the application: upload the course three
+     times. The downloaded JSON records the model, the prompt version, the word
+     count and the warnings of the automatic checks.
 4. **Outputs.** Save the S1 outputs in `outputs/study-sheet/<version>/` (see
    [outputs/](../../outputs/README.md)) and the real-course outputs in
    `data/local/`.
@@ -52,11 +56,15 @@ faithfulness.
 failure modes the course guidelines ask us to study. Copy each invented
 statement or reference into the observations with its run.
 
+**Format** for structured versions (v2 and later): the schema already enforces
+sections, points and source numbers, so score the language of the course and
+whether every section has sources.
+
 ## Test set
 
 | ID | Subject | Format | Size | Key points listed |
 | --- | --- | --- | --- | --- |
-| S1 | Statistics (synthetic) | PPTX-like text | 12 slides | Yes, below |
+| S1 | Statistics (synthetic) | Extracted text, and a PPTX built from it | 12 slides | Yes, below |
 | C1 | TODO | TODO | TODO | No |
 | C2 | TODO | TODO | TODO | No |
 | C3 | TODO | TODO | TODO | No |

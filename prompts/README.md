@@ -9,9 +9,12 @@ tasks are study-sheet generation, flashcards, quizzes and subject-tag suggestion
 prompts/
 ├── README.md
 ├── examples/                               synthetic test inputs
-│   └── synthetic_course_regression_fr.md
+│   ├── synthetic_course_regression_fr.md   course S1 as extracted text
+│   ├── synthetic_course_regression_fr.pptx the same course as a PowerPoint file
+│   └── build_synthetic_pptx.py             rebuilds the .pptx from the .md
 └── study-sheet/
     ├── v1_initial_prompt.md                one file per version
+    ├── v2_structured_prompt.md
     └── evaluation.md                       protocol, criteria, test set, results
 ```
 
@@ -20,6 +23,10 @@ prompts/
 | Task | Version | Techniques | Status |
 | --- | --- | --- | --- |
 | Study sheet | [v1](study-sheet/v1_initial_prompt.md) | Zero-shot baseline, plain-language requirements | Awaiting evaluation |
+| Study sheet | [v2](study-sheet/v2_structured_prompt.md) | v1 with structured output (JSON schema) | Used by the application; awaiting evaluation |
+
+The application reads its prompt from these files (`backend/app/prompts.py`):
+the version it uses is set by `STUDY_SHEET_PROMPT_VERSION` in `backend/.env`.
 
 ## Method
 
