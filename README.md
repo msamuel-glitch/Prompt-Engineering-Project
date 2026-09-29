@@ -3,9 +3,10 @@
 Turn long course PDFs and PowerPoint slides into editable, printable study sheets
 with flashcards, quizzes and a subject library.
 
-**Status: development setup.** The backend skeleton runs, with a health endpoint
-and its tests: see [backend/](backend/README.md) for the commands. The frontend
-skeleton comes next. No product feature works yet.
+**Status: development setup.** The application skeletons run: a FastAPI backend
+with a health endpoint and its tests, and a React page that checks the API. See
+[backend/](backend/README.md) and [frontend/](frontend/README.md) for the
+commands. No product feature works yet.
 
 ## Why we are building this
 

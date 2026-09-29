@@ -38,8 +38,10 @@ documentation accurately distinguishes planned features from working software.
 - [ ] Set up a GitHub Projects board with Todo, In progress, In review and Done.
 - [x] Scaffold FastAPI with a health endpoint and explicit Python dependencies
       (pip and a virtual environment, pinned requirements files).
-- [ ] Scaffold React + Vite + TypeScript and commit its dependency lockfile.
-- [ ] Document working install/run/check commands and environment variables.
+- [x] Scaffold React + Vite + TypeScript and commit its dependency lockfile
+      (npm, package-lock.json).
+- [x] Document working install/run/check commands and environment variables
+      (backend/README.md and frontend/README.md; no variables needed yet).
 - [ ] Configure an Anthropic key with a spending limit, and collect 6–10 local
       sample courses without committing them.
 
