@@ -2,10 +2,11 @@
 
 The user interface of the application, built with React, Vite and TypeScript.
 
-**Current state:** a page to upload a course (PDF or PPTX) and read the generated
-study sheet: its sections, key points, the pages or slides each section comes
-from, and the warnings of the automatic checks. The sheet can be downloaded as
-JSON. No environment variable is needed.
+**Current state:** upload a course (PDF or PPTX), read the generated study
+sheet with the pages or slides each section comes from and the warnings of the
+automatic checks, edit it, file it under subject tags, reopen it from the
+library and print it on two A4 pages. The sheet can also be downloaded as JSON.
+No environment variable is needed.
 
 ## Setup
 
@@ -59,11 +60,17 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 | Path | Content |
 | --- | --- |
 | `src/main.tsx` | Entry point that mounts the React application |
-| `src/App.tsx` | Page: API status, upload and result |
+| `src/App.tsx` | Page: API status, upload, the open sheet and the library |
 | `src/UploadForm.tsx` | File picker and generate button |
-| `src/SheetView.tsx` | Display of a generated sheet |
+| `src/SheetView.tsx` | Display of a sheet, with the print button and the two-page gauge |
+| `src/SheetEditor.tsx` | Form to rewrite, add, remove and reorder the sections |
+| `src/Library.tsx` | Saved sheets, newest first, narrowed by subject |
+| `src/TagEditor.tsx` | Subject tags of the open sheet |
+| `src/edits.ts` | Operations on a sheet as pure functions, tested in `edits.test.ts` |
+| `src/fit.ts` | Two-page fill estimate, tested in `fit.test.ts` |
+| `src/print.css` | A4 print layout; its type size matches the constants in `fit.ts` |
 | `src/sources.ts` | Page and slide references ("Pages 3–5, 8"), tested in `sources.test.ts` |
-| `src/api.ts` | Call to `POST /api/sheets` and error messages |
+| `src/api.ts` | Calls to the sheet routes and error messages |
 | `src/api-schema.d.ts` | Generated API types; do not edit by hand |
 | `vite.config.ts` | Vite configuration, including the `/api` forwarding |
 | `package.json`, `package-lock.json` | Dependencies and scripts; commit both |
@@ -71,12 +78,23 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 The project was generated with `npm create vite@latest -- --template react-ts`
 and cleaned of the template's demo content.
 
+## Editing without Tiptap
+
+The project plan lists Tiptap as the editor. The sheet is not rich text: it is
+structured data, a title and a list of sections each holding short key ideas and
+source numbers. Plain form fields map onto that structure directly, one field
+per value, and keep the saved sheet valid against the backend schema by
+construction. Tiptap would add a rich-text document to convert back and forth.
+
+This is a deliberate departure from the plan's tool list, not an oversight. If
+the team wants Tiptap, the place for it is the key-idea fields, and `edits.ts`
+would stay as it is.
+
 ## Planned responsibilities
 
-- Section editing with Tiptap, reordering and restoring the original AI version.
-- A4 print styles and PDF export through window.print().
 - Flashcards, quizzes and section review badges.
-- Subject tags and a filterable library.
+- Subject tags suggested by the AI, on top of the editable ones.
+- A consistent visual identity for the sheet.
 
 The structured sheet drives rendering and editing. Keep Claude credentials in
 the backend; frontend environment variables must not contain secrets.
