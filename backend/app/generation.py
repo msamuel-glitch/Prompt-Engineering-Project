@@ -123,37 +123,43 @@ def course_signature(course: Course) -> str:
 
 
 class FixtureSheetGenerator:
-    """Serve a sheet recorded earlier, for the one course it was recorded from.
+    """Serve a sheet recorded earlier, and a placeholder for any other course.
 
     It exists so the application can be shown with real content while no API key
-    is available. It is not an AI call and does not stand in for one: a sheet
-    recorded from another course would say nothing about the one uploaded, so
-    any other course is refused rather than answered with the wrong sheet.
+    is available. A recording only describes the course it was made from, so
+    uploading a different course falls back to the placeholder generator rather
+    than answering with a sheet about something else.
 
-    The recording carries the model and the interface that produced it, which
-    the API returns as the generator so nothing presents it as a live call.
+    Which path was taken is visible afterwards: the generator reports itself as
+    "fixture" when it served the recording and as "fake" when it fell back, and
+    that name is stored with the sheet. A new instance is built for each request,
+    so setting it during generation is safe.
     """
 
-    name = "fixture"
-
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, fallback: "SheetGenerator | None" = None):
         try:
             record = json.loads(path.read_text(encoding="utf-8"))
-            self.prompt_version = record["recorded"]["prompt_version"]
+            self._recorded_version = record["recorded"]["prompt_version"]
             self._signature = record["course_signature"]
             self._sheet = StudySheet.model_validate(record["sheet"])
         except (OSError, ValueError, KeyError) as error:
             raise GenerationError(
                 f"The recorded sheet {path} could not be read: {error}"
             ) from error
-        self._name = path.name
+        self._fallback = fallback or FakeSheetGenerator()
+        self.name = "fixture"
+        self.prompt_version = self._recorded_version
 
     def generate(self, course: Course) -> StudySheet:
-        if course_signature(course) != self._signature:
-            raise GenerationError(
-                f"The recorded sheet in {self._name} was made from a different "
-                "course, so it says nothing about this one. Upload the course it "
-                "was recorded from, or set STUDY_SHEET_GENERATOR to claude for a "
-                "real summary or to fake for a placeholder."
-            )
-        return self._sheet.model_copy(deep=True)
+        if course_signature(course) == self._signature:
+            self.name = "fixture"
+            self.prompt_version = self._recorded_version
+            return self._sheet.model_copy(deep=True)
+
+        logger.info(
+            "Course does not match the recorded one: falling back to %s",
+            self._fallback.name,
+        )
+        self.name = self._fallback.name
+        self.prompt_version = self._fallback.prompt_version
+        return self._fallback.generate(course)

@@ -485,3 +485,37 @@
     padding: var(--space-5) var(--space-4);
   }
 }
+
+.header-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* How sheets are made, next to whether the API answers at all. */
+.mode-badge {
+  margin: 0;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.mode-badge[data-mode="claude"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.mode-badge[data-mode="fixture"],
+.mode-badge[data-mode="fake"] {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.mode-note {
+  border-left-color: var(--warn);
+  background: var(--warn-soft);
+  color: var(--ink);
+}

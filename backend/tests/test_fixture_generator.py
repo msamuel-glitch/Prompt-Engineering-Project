@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 
 from app.config import get_settings
 from app.extraction import extract_course
-from app.generation import FixtureSheetGenerator, GenerationError
+from app.generation import FixtureSheetGenerator
 from app.main import app
 
 client = TestClient(app)
@@ -33,13 +33,20 @@ def test_the_recording_is_served_for_the_course_it_was_made_from(
     assert len(sheet.sections) == 7
 
 
-def test_the_recording_is_refused_for_any_other_course(generator, make_pdf):
-    other = extract_course("other.pdf", make_pdf(["A completely different course"]))
+def test_the_recording_never_reaches_a_sheet_about_another_course(
+    generator, make_pdf
+):
+    """The invariant behind the fallback, checked from the recording's side.
 
-    with pytest.raises(GenerationError) as failure:
-        generator.generate(other)
+    What happens instead is in test_fixture_fallback.py; what must never happen
+    is that a sheet about one course carries content recorded from another.
+    """
+    other = extract_course("other.pdf", make_pdf(["Marketing and the four Ps"]))
 
-    assert "different course" in str(failure.value)
+    sheet = generator.generate(other)
+
+    recorded = {section.title for section in generator._sheet.sections}
+    assert {section.title for section in sheet.sections}.isdisjoint(recorded)
 
 
 def test_the_recording_never_cites_the_slides_it_should_not(generator, recorded_course):

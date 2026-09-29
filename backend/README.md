@@ -90,10 +90,15 @@ request; the strategy for long courses is still an open decision.
 `fake` generator builds. It is a recording, not a call: the API returns
 `fixture` as the generator and the interface says so on the sheet.
 
-A recording is tied to the course it was made from, identified by a hash of the
-exact text that would be sent to the model. Uploading any other course is
-refused with an explanation, because a sheet recorded from one course says
-nothing about another.
+A recording only describes the course it was made from, identified by a hash of
+the exact text that would be sent to the model. Uploading any other course falls
+back to the `fake` placeholder built from that course's own text, and the sheet
+records `fake` as its generator: a sheet never claims to be the recording when
+it is not, and content from one course never reaches a sheet about another.
+
+`GET /api/health` returns the generator in use, which the interface shows next
+to the connection state so a student knows whether to expect a real summary, a
+recording or a placeholder before uploading anything.
 
 ## How a sheet is kept
 

@@ -109,7 +109,10 @@ export interface paths {
         };
         /**
          * Health
-         * @description Tell clients that the API is running.
+         * @description Tell clients that the API is running, and how it makes sheets.
+         *
+         *     The interface shows the generator so a student knows whether to expect a
+         *     real summary, a recorded one or a placeholder before uploading anything.
          */
         get: operations["health_api_health_get"];
         put?: never;
@@ -141,6 +144,11 @@ export interface components {
              * @constant
              */
             status: "ok";
+            /**
+             * Generator
+             * @description How sheets are made: "claude", "fixture" or "fake"
+             */
+            generator: string;
         };
         /** Section */
         Section: {

@@ -5,11 +5,13 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_health_returns_ok():
+def test_health_returns_ok_and_the_generator(monkeypatch):
+    monkeypatch.setenv("STUDY_SHEET_GENERATOR", "fixture")
+
     response = client.get("/api/health")
 
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    assert response.json() == {"status": "ok", "generator": "fixture"}
 
 
 def test_openapi_schema_lists_health_route():

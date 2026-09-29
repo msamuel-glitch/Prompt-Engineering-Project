@@ -4,8 +4,9 @@ import logging
 from typing import Literal
 
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
+from app.config import get_settings
 from app.sheets import router as sheets_router
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:     %(name)s - %(message)s")
@@ -16,10 +17,17 @@ app.include_router(sheets_router)
 
 class HealthResponse(BaseModel):
     status: Literal["ok"]
+    generator: str = Field(
+        description='How sheets are made: "claude", "fixture" or "fake"'
+    )
 
 
 # Routes live under /api so that the frontend dev server can forward them.
 @app.get("/api/health", response_model=HealthResponse)
 def health() -> HealthResponse:
-    """Tell clients that the API is running."""
-    return HealthResponse(status="ok")
+    """Tell clients that the API is running, and how it makes sheets.
+
+    The interface shows the generator so a student knows whether to expect a
+    real summary, a recorded one or a placeholder before uploading anything.
+    """
+    return HealthResponse(status="ok", generator=get_settings().generator)
