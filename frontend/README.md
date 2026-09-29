@@ -5,8 +5,8 @@ The user interface of the application, built with React, Vite and TypeScript.
 **Current state:** upload a course (PDF or PPTX), read the generated study
 sheet with the pages or slides each section comes from and the warnings of the
 automatic checks, edit it, file it under subject tags, reopen it from the
-library and print it on two A4 pages. The sheet can also be downloaded as JSON.
-No environment variable is needed.
+library, revise it with flashcards and print it on two A4 pages. The sheet can
+also be downloaded as JSON. No environment variable is needed.
 
 ## Setup
 
@@ -64,6 +64,8 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 | `src/UploadForm.tsx` | File picker and generate button |
 | `src/SheetView.tsx` | Display of a sheet, with the print button and the two-page gauge |
 | `src/SheetEditor.tsx` | Form to rewrite, add, remove and reorder the sections |
+| `src/Flashcards.tsx` | Revision mode: one card per section, reveal and shuffle |
+| `src/cards.ts` | Flashcards derived from a sheet, tested in `cards.test.ts` |
 | `src/Library.tsx` | Saved sheets, newest first, narrowed by subject |
 | `src/TagEditor.tsx` | Subject tags of the open sheet |
 | `src/edits.ts` | Operations on a sheet as pure functions, tested in `edits.test.ts` |
@@ -90,9 +92,18 @@ This is a deliberate departure from the plan's tool list, not an oversight. If
 the team wants Tiptap, the place for it is the key-idea fields, and `edits.ts`
 would stay as it is.
 
+## Flashcards without an AI call
+
+The brief derives every study aid from the stored sheet JSON, and asks the AI
+only for the quiz. A flashcard is therefore a rearrangement of text the model
+already wrote: the section heading becomes the question, its key ideas the
+answer. Deriving them on every render rather than storing them also settles when
+study aids go stale after an edit — they cannot.
+
 ## Planned responsibilities
 
-- Flashcards, quizzes and section review badges.
+- The quiz, its confidence score and the review badges on weak sections. This is
+  the one study aid that needs a working API key.
 - Subject tags suggested by the AI, on top of the editable ones.
 - A consistent visual identity for the sheet.
 

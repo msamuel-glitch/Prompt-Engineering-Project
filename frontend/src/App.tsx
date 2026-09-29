@@ -11,6 +11,7 @@ import {
   type StoredSheet,
   type StudySheet,
 } from './api'
+import { Flashcards } from './Flashcards'
 import { Library } from './Library'
 import { SheetEditor } from './SheetEditor'
 import { SheetView } from './SheetView'
@@ -31,7 +32,8 @@ function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>('checking')
   const [generating, setGenerating] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [editing, setEditing] = useState(false)
+  // What the open sheet is showing: reading it, editing it, or revising it.
+  const [mode, setMode] = useState<'read' | 'edit' | 'cards'>('read')
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState<StoredSheet | null>(null)
   const [library, setLibrary] = useState<SheetSummary[]>([])
@@ -69,20 +71,20 @@ function App() {
 
   async function handleUpload(file: File) {
     setGenerating(true)
-    setEditing(false)
+    setMode('read')
     setOpen(null)
     await run(() => generateSheet(file))
     setGenerating(false)
   }
 
   async function handleOpen(id: string) {
-    setEditing(false)
+    setMode('read')
     await run(() => readSheet(id))
   }
 
   async function handleDelete(id: string) {
     if (open?.id === id) {
-      setEditing(false)
+      setMode('read')
     }
     await run(async () => {
       await deleteSheet(id)
@@ -94,7 +96,7 @@ function App() {
     setSaving(true)
     // Stay in the editor if saving failed, so nothing typed is lost.
     if (await run(() => saveSheet(id, sheet))) {
-      setEditing(false)
+      setMode('read')
     }
     setSaving(false)
   }
@@ -134,10 +136,18 @@ function App() {
               tags={open.tags}
               onSave={(tags) => run(() => setTags(open.id, tags))}
             />
-            {!editing && (
-              <button type="button" onClick={() => setEditing(true)}>
-                Edit this sheet
-              </button>
+            {mode !== 'edit' && (
+              <>
+                <button type="button" onClick={() => setMode('edit')}>
+                  Edit this sheet
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode(mode === 'cards' ? 'read' : 'cards')}
+                >
+                  {mode === 'cards' ? 'Back to the sheet' : 'Revise with flashcards'}
+                </button>
+              </>
             )}
             {open.edited && (
               <button type="button" onClick={() => run(() => restoreSheet(open.id))}>
@@ -146,7 +156,7 @@ function App() {
             )}
           </div>
 
-          {editing ? (
+          {mode === 'edit' && (
             <SheetEditor
               key={open.id}
               sheet={open.sheet}
@@ -154,11 +164,17 @@ function App() {
               sourceCount={open.source_count}
               saving={saving}
               onSave={(sheet) => handleSave(open.id, sheet)}
-              onCancel={() => setEditing(false)}
+              onCancel={() => setMode('read')}
             />
-          ) : (
-            <SheetView result={open} />
           )}
+          {mode === 'cards' && (
+            <Flashcards
+              key={open.id}
+              sheet={open.sheet}
+              sourceType={open.source_type}
+            />
+          )}
+          {mode === 'read' && <SheetView result={open} />}
         </>
       )}
 
