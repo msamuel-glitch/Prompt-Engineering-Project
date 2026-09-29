@@ -4,6 +4,7 @@ import type { components } from './api-schema'
 
 export type StudySheetResponse = components['schemas']['StudySheetResponse']
 export type SourceType = StudySheetResponse['source_type']
+export type StudySheet = StudySheetResponse['sheet']
 
 export async function generateSheet(file: File): Promise<StudySheetResponse> {
   const form = new FormData()

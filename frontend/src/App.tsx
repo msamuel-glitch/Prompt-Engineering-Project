@@ -3,6 +3,7 @@ import { generateSheet, type StudySheetResponse } from './api'
 import { SheetView } from './SheetView'
 import { UploadForm } from './UploadForm'
 import './App.css'
+import './print.css'
 
 type ApiStatus = 'checking' | 'ok' | 'unreachable'
 
@@ -48,7 +49,7 @@ function App() {
           API: {statusLabels[apiStatus]}
         </p>
       </header>
-      <p>
+      <p className="app-intro">
         Upload a course to get a study sheet. Each section shows the pages or slides
         it comes from, so you can check it against the course.
       </p>

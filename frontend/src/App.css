@@ -91,3 +91,25 @@
   color: #59636e;
   font-size: 0.85rem;
 }
+
+.sheet-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.fit-gauge {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid #1a7f37;
+  background: #f6f8fa;
+  font-size: 0.9rem;
+}
+
+.fit-gauge[data-overflows='true'] {
+  border-left-color: #cf222e;
+}
+
+.fit-caveat {
+  color: #57606a;
+}

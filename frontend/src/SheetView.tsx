@@ -1,4 +1,5 @@
 import type { StudySheetResponse } from './api'
+import { estimateFit } from './fit'
 import { formatSources } from './sources'
 
 type Props = {
@@ -12,6 +13,8 @@ export function SheetView({ result }: Props) {
     result.generator === 'fake'
       ? 'placeholder sheet, no AI'
       : `${result.generator}, prompt ${result.prompt_version}`
+  const fit = estimateFit(sheet)
+  const percentage = Math.round(fit.ratio * 100)
 
   return (
     <article className="sheet">
@@ -22,6 +25,21 @@ export function SheetView({ result }: Props) {
         <button type="button" className="link-button" onClick={() => downloadJson(result)}>
           Download (JSON)
         </button>
+      </p>
+
+      <div className="sheet-actions">
+        <button type="button" onClick={() => window.print()}>
+          Print / save as PDF
+        </button>
+      </div>
+
+      <p className="fit-gauge" data-overflows={fit.overflows} role="note">
+        {fit.overflows
+          ? `Estimated at ${percentage}% of the two pages: it will probably run onto a third one. Shorten or remove a section, then check the print preview.`
+          : `Estimated at ${percentage}% of the two pages.`}{' '}
+        <span className="fit-caveat">
+          This is an estimate from the text length; the print preview is what decides.
+        </span>
       </p>
 
       {result.warnings.length > 0 && (
