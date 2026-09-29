@@ -61,13 +61,15 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 | --- | --- |
 | `src/index.css` | Design tokens and base element styles: colours, spacing, buttons, fields |
 | `src/main.tsx` | Entry point that mounts the React application |
-| `src/App.tsx` | Page: API status, upload, the open sheet and the library |
+| `src/App.tsx` | The shell: which view is showing, and the state shared between them |
+| `src/Nav.tsx` | Site header: the StudyCard mark, the tabs, the connection and generator badges |
+| `src/Home.tsx` | Landing page: what the application does, how it works and what it does not do |
 | `src/UploadForm.tsx` | File picker and generate button |
 | `src/SheetView.tsx` | Display of a sheet, with the print button and the two-page gauge |
 | `src/SheetEditor.tsx` | Form to rewrite, add, remove and reorder the sections |
 | `src/Flashcards.tsx` | Revision mode: one card per section, reveal and shuffle |
 | `src/cards.ts` | Flashcards derived from a sheet, tested in `cards.test.ts` |
-| `src/Library.tsx` | Saved sheets, newest first, narrowed by subject |
+| `src/Library.tsx` | Saved sheets as cards, each previewing its first headings, narrowed by subject |
 | `src/TagEditor.tsx` | Subject tags of the open sheet |
 | `src/edits.ts` | Operations on a sheet as pure functions, tested in `edits.test.ts` |
 | `src/fit.ts` | Two-page fill estimate, tested in `fit.test.ts` |
@@ -93,6 +95,15 @@ construction. Tiptap would add a rich-text document to convert back and forth.
 This is a deliberate departure from the plan's tool list, not an oversight. If
 the team wants Tiptap, the place for it is the key-idea fields, and `edits.ts`
 would stay as it is.
+
+## Navigation
+
+The application is one page with four tabs — Home, New sheet, My library and
+Flashcards — plus a fifth for the sheet currently open. Which one shows is a
+piece of state in `App.tsx`; there is no router and therefore no URL per view.
+That is a deliberate trade for a demonstration: no extra dependency, at the cost
+of not being able to link to a view or use the browser's back button. A router
+is the first thing to add if the application outlives the project.
 
 ## Visual design
 

@@ -155,6 +155,11 @@ def list_sheets(
             source_type=record.source_type,
             source_count=record.source_count,
             word_count=count_words(record.current_sheet),
+            section_count=len(record.current_sheet.sections),
+            # Enough headings to tell two sheets apart at a glance.
+            preview=[
+                section.title for section in record.current_sheet.sections[:3]
+            ],
             tags=record.tags,
             edited=record.edited,
         )

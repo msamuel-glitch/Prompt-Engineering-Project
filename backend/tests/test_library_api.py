@@ -38,6 +38,14 @@ def test_a_generated_sheet_is_saved_and_listed(saved):
     assert library[0]["source_count"] == 2
 
 
+def test_a_library_card_previews_what_the_sheet_covers(saved):
+    card = client.get("/api/sheets").json()[0]
+
+    headings = [section["title"] for section in saved["sheet"]["sections"]]
+    assert card["section_count"] == len(headings)
+    assert card["preview"] == headings[:3]
+
+
 def test_a_saved_sheet_can_be_read_again(saved):
     again = client.get(f"/api/sheets/{saved['id']}").json()
 

@@ -11,17 +11,21 @@
     margin: 15mm;
   }
 
-  /* Only the sheet is printed, never the application around it. */
-  .app-header,
-  .app-intro,
+  /* Only the sheet is printed, never the site around it. */
+  .site-header,
+  .site-footer,
+  .page-head,
   .upload-form,
+  .info-panel,
+  .empty-state,
+  .filter-bar,
+  .sheet-grid,
   .notice,
   .warnings,
   .sheet-actions,
   .sheet-tools,
   .sheet-editor,
   .flashcards,
-  .library,
   .fit-gauge {
     display: none !important;
   }
@@ -31,7 +35,8 @@
     color: #000;
   }
 
-  .app {
+  .site-main,
+  .page {
     max-width: none;
     margin: 0;
     padding: 0;

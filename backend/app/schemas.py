@@ -52,7 +52,7 @@ class StoredSheet(StudySheetResponse):
 
 
 class SheetSummary(BaseModel):
-    """One row of the subject library."""
+    """One card of the subject library."""
 
     id: str
     created_at: str
@@ -61,6 +61,10 @@ class SheetSummary(BaseModel):
     source_type: SourceType
     source_count: int
     word_count: int
+    section_count: int
+    preview: list[str] = Field(
+        description="Headings of the first sections, to show what the sheet covers"
+    )
     tags: list[str]
     edited: bool
 

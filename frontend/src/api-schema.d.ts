@@ -170,7 +170,7 @@ export interface components {
         };
         /**
          * SheetSummary
-         * @description One row of the subject library.
+         * @description One card of the subject library.
          */
         SheetSummary: {
             /** Id */
@@ -190,6 +190,13 @@ export interface components {
             source_count: number;
             /** Word Count */
             word_count: number;
+            /** Section Count */
+            section_count: number;
+            /**
+             * Preview
+             * @description Headings of the first sections, to show what the sheet covers
+             */
+            preview: string[];
             /** Tags */
             tags: string[];
             /** Edited */
