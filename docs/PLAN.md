@@ -110,8 +110,9 @@ study sheets with traceable source references.
 
 - [x] Implement text editing, section addition/removal/reordering and restoration
       of the AI version.
-- [ ] Add a consistent visual design and A4 print CSS (the A4 print stylesheet
-      is in place; a consistent visual identity is still to design).
+- [x] Add a consistent visual design and A4 print CSS: tokens and base element
+      styles in `frontend/src/index.css`, composed by `App.css`, with the print
+      stylesheet stripping the on-screen card so the sheet becomes the page.
 - [ ] Verify the two-page target on representative courses and handle overflow
       after student edits visibly (overflow is estimated and warned about live
       while editing; the estimate has not been checked against printed courses).

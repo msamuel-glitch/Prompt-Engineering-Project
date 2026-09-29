@@ -26,7 +26,7 @@ export function UploadForm({ onUpload, disabled }: Props) {
           onChange={(event) => setFile(event.target.files?.[0] ?? null)}
         />
       </label>
-      <button type="submit" disabled={disabled || !file}>
+      <button type="submit" className="primary" disabled={disabled || !file}>
         Generate the study sheet
       </button>
     </form>

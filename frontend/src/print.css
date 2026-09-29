@@ -37,8 +37,13 @@
     padding: 0;
   }
 
-  /* 11pt over the 180mm text column left by the margins above. */
+  /* On paper the sheet is the page: none of the card it is on screen. */
   .sheet {
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
     font-size: 11pt;
     line-height: 1.35;
   }

@@ -59,6 +59,7 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 
 | Path | Content |
 | --- | --- |
+| `src/index.css` | Design tokens and base element styles: colours, spacing, buttons, fields |
 | `src/main.tsx` | Entry point that mounts the React application |
 | `src/App.tsx` | Page: API status, upload, the open sheet and the library |
 | `src/UploadForm.tsx` | File picker and generate button |
@@ -70,6 +71,7 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 | `src/TagEditor.tsx` | Subject tags of the open sheet |
 | `src/edits.ts` | Operations on a sheet as pure functions, tested in `edits.test.ts` |
 | `src/fit.ts` | Two-page fill estimate, tested in `fit.test.ts` |
+| `src/App.css` | Component styles, built on the tokens in `index.css` |
 | `src/print.css` | A4 print layout; its type size matches the constants in `fit.ts` |
 | `src/sources.ts` | Page and slide references ("Pages 3–5, 8"), tested in `sources.test.ts` |
 | `src/api.ts` | Calls to the sheet routes and error messages |
@@ -91,6 +93,21 @@ construction. Tiptap would add a rich-text document to convert back and forth.
 This is a deliberate departure from the plan's tool list, not an oversight. If
 the team wants Tiptap, the place for it is the key-idea fields, and `edits.ts`
 would stay as it is.
+
+## Visual design
+
+`index.css` holds the tokens — colours, spacing, radii, shadows, two type
+families — and the base styles for buttons and fields. `App.css` only composes
+them, so a change of palette or rhythm happens in one file.
+
+The look is notes on a desk: a warm paper surface, white sheets raised off it,
+an ink-blue accent, and a serif for the study sheet against the system sans of
+the interface around it. **No web fonts**: a demonstration must not depend on
+the network, so the stacks fall back to fonts present on every platform.
+
+Print overrides all of it. `print.css` strips the card — border, shadow,
+padding — so the sheet becomes the page, and fixes the type at 11pt to match
+the character budget in `fit.ts`.
 
 ## Flashcards without an AI call
 

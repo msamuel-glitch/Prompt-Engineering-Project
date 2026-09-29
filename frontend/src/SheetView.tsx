@@ -30,7 +30,7 @@ export function SheetView({ result }: Props) {
       </p>
 
       <div className="sheet-actions">
-        <button type="button" onClick={() => window.print()}>
+        <button type="button" className="primary" onClick={() => window.print()}>
           Print / save as PDF
         </button>
       </div>

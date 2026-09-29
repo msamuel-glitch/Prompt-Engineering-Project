@@ -1,7 +1,11 @@
+/* Components. Tokens and base elements live in index.css, print in print.css. */
+
+/* --- Layout -------------------------------------------------------------- */
+
 .app {
-  max-width: 48rem;
-  margin: 3rem auto;
-  padding: 0 1rem;
+  max-width: 54rem;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
 }
 
 .app-header {
@@ -9,145 +13,412 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0 1rem;
+  gap: var(--space-2) var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
 }
 
-.api-status[data-status='ok'] {
-  color: #1a7f37;
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
 }
 
-.api-status[data-status='unreachable'] {
-  color: #cf222e;
+.app-intro {
+  max-width: 44rem;
+  margin: var(--space-4) 0 var(--space-5);
+  color: var(--ink-soft);
 }
+
+/* A pill with a dot, so the state reads before the label does. */
+.api-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.api-status::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--ink-faint);
+}
+
+.api-status[data-status="ok"] {
+  color: var(--ok);
+}
+
+.api-status[data-status="ok"]::before {
+  background: var(--ok);
+}
+
+.api-status[data-status="unreachable"] {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.api-status[data-status="unreachable"]::before {
+  background: var(--danger);
+}
+
+/* --- Upload -------------------------------------------------------------- */
 
 .upload-form {
   display: flex;
   flex-wrap: wrap;
   align-items: end;
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
 }
 
 .upload-form label {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
 }
+
+/* --- Notices ------------------------------------------------------------- */
 
 .notice {
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  background-color: #f6f8fa;
-}
-
-.notice.error {
-  color: #82071e;
-  background-color: #ffebe9;
-}
-
-.sheet {
-  margin-top: 2rem;
-}
-
-.sheet-meta {
-  color: #59636e;
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--accent-soft);
   font-size: 0.9rem;
 }
 
-.link-button {
-  margin-left: 0.75rem;
-  padding: 0;
-  border: none;
-  background: none;
-  color: #0969da;
-  font: inherit;
-  text-decoration: underline;
-  cursor: pointer;
+.notice.error {
+  border-left-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
-.warnings {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  background-color: #fff8c5;
+/* --- The sheet, as a page lying on the desk ------------------------------ */
+
+.sheet {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-6);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-sheet);
+  font-size: 1.02rem;
 }
 
-.warnings h3 {
-  margin: 0.5rem 0 0;
-  font-size: 1rem;
+.sheet h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.6rem;
+}
+
+.sheet-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
 }
 
 .sheet-section {
-  padding: 0.25rem 0;
-  border-bottom: 1px solid #d0d7de;
+  margin: 0 0 var(--space-5);
 }
 
 .sheet-section h3 {
-  margin-bottom: 0.25rem;
+  margin: 0 0 var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--accent);
+  font-size: 1.1rem;
+}
+
+.sheet-section ul {
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+.sheet-section li {
+  margin: 0 0 var(--space-1);
 }
 
 .sources {
-  color: #59636e;
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.warnings {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--warn-soft);
+  font-family: var(--font-ui);
   font-size: 0.85rem;
+}
+
+.warnings h3 {
+  margin: 0 0 var(--space-1);
+  color: var(--warn);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.warnings ul {
+  margin: 0;
+  padding-left: 1.2rem;
 }
 
 .sheet-actions {
   display: flex;
-  gap: 0.5rem;
-  margin: 0 0 0.75rem;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
 }
+
+/* --- Two-page gauge ------------------------------------------------------ */
 
 .fit-gauge {
-  margin: 0 0 1rem;
-  padding: 0.5rem 0.75rem;
-  border-left: 3px solid #1a7f37;
-  background: #f6f8fa;
-  font-size: 0.9rem;
+  margin: 0 0 var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border-left: 3px solid var(--ok);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-sunken);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
 }
 
-.fit-gauge[data-overflows='true'] {
-  border-left-color: #cf222e;
+.fit-gauge[data-overflows="true"] {
+  border-left-color: var(--danger);
+  background: var(--danger-soft);
 }
 
 .fit-caveat {
-  color: #57606a;
+  color: var(--ink-faint);
 }
+
+/* --- Tools above the sheet ----------------------------------------------- */
 
 .sheet-tools {
   display: flex;
   flex-wrap: wrap;
   align-items: end;
-  gap: 1rem;
-  margin: 1.5rem 0 0;
-  padding: 0.75rem 1rem;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
+  gap: var(--space-4);
+  margin: var(--space-5) 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
 }
 
 .tag-editor {
   display: flex;
   align-items: end;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
-.tag-editor label {
+.tag-editor label,
+.sheet-title-field,
+.section-field label {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
 }
 
+/* --- Editor -------------------------------------------------------------- */
+
+.sheet-editor {
+  margin: 0;
+}
+
+.sheet-title-field {
+  margin: 0 0 var(--space-4);
+}
+
+.section-field {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.section-field legend {
+  padding: 0 var(--space-2);
+  color: var(--ink-faint);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.section-field label {
+  margin: 0 0 var(--space-3);
+}
+
+.section-controls {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-3);
+}
+
+.section-controls .danger {
+  margin-left: auto;
+}
+
+.field-label {
+  display: block;
+  margin: 0 0 var(--space-2);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.point-field {
+  display: flex;
+  align-items: start;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+}
+
+.point-field textarea {
+  flex: 1;
+}
+
+.field-warning {
+  margin: var(--space-2) 0 0;
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+}
+
+/* --- Flashcards ---------------------------------------------------------- */
+
+.flashcards {
+  margin: 0;
+}
+
+.flashcards-progress {
+  margin: 0 0 var(--space-2);
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.flashcard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 14rem;
+  padding: var(--space-6);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-sheet);
+  cursor: pointer;
+  transition: box-shadow 150ms ease, transform 150ms ease;
+}
+
+.flashcard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(27, 29, 33, 0.06), 0 14px 38px rgba(27, 29, 33, 0.09);
+}
+
+/* Unanswered, the card is a question alone in the middle of the page. */
+.flashcard[data-revealed="false"] {
+  align-items: center;
+  text-align: center;
+}
+
+.flashcard h3 {
+  margin: 0 0 var(--space-3);
+  font-size: 1.35rem;
+}
+
+.flashcard ul {
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+.flashcard li {
+  margin: 0 0 var(--space-2);
+}
+
+.flashcard-hint {
+  margin: 0;
+  color: var(--ink-faint);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+
+.flashcards-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+}
+
+/* --- Library ------------------------------------------------------------- */
+
 .library {
-  margin: 2.5rem 0 0;
-  padding-top: 1.5rem;
-  border-top: 1px solid #d0d7de;
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.library h2 {
+  margin: 0 0 var(--space-3);
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .library-empty {
-  color: #57606a;
+  color: var(--ink-faint);
+}
+
+.library-filter {
+  margin: 0 0 var(--space-3);
+  color: var(--ink-soft);
+  font-size: 0.85rem;
 }
 
 .library-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -157,164 +428,60 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.6rem 0.5rem;
-  border-bottom: 1px solid #eaeef2;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
 }
 
-.library-list li[data-open='true'] {
-  background: #f6f8fa;
+.library-list li[data-open="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
-.library-meta,
+.library-list .link-button {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.library-list .link-button:hover {
+  text-decoration: underline;
+}
+
+.library-meta {
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+}
+
 .library-tags {
-  color: #57606a;
-  font-size: 0.85rem;
-}
-
-.library-tags {
-  padding: 0 0.4rem;
+  padding: 0.1rem 0.5rem;
   border-radius: 999px;
-  background: #eaeef2;
+  background: var(--surface-sunken);
+  color: var(--ink-soft);
+  font-size: 0.75rem;
 }
 
 .badge {
-  color: #9a6700;
+  color: var(--warn);
   font-weight: 600;
 }
 
 .link-button.danger {
-  color: #cf222e;
   margin-left: auto;
-}
-
-.sheet-editor {
-  margin: 1rem 0 0;
-}
-
-.sheet-title-field,
-.section-field label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin: 0 0 0.75rem;
-  font-weight: 600;
-}
-
-.sheet-title-field input,
-.section-field input,
-.section-field textarea {
-  font: inherit;
-  font-weight: 400;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-}
-
-.section-field {
-  margin: 0 0 1rem;
-  padding: 0.75rem 1rem 1rem;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
-}
-
-.section-field legend {
-  padding: 0 0.4rem;
-  color: #57606a;
   font-size: 0.85rem;
 }
 
-.section-controls {
-  display: flex;
-  gap: 0.4rem;
-  margin: 0 0 0.75rem;
-}
+/* --- Small screens ------------------------------------------------------- */
 
-.field-label {
-  display: block;
-  margin: 0 0 0.35rem;
-  font-weight: 600;
-}
+@media (max-width: 40rem) {
+  .app {
+    padding: var(--space-5) var(--space-4);
+  }
 
-.point-field {
-  display: flex;
-  align-items: start;
-  gap: 0.5rem;
-  margin: 0 0 0.4rem;
-}
-
-.point-field textarea {
-  flex: 1;
-  resize: vertical;
-}
-
-.field-warning {
-  margin: 0.4rem 0 0;
-  color: #cf222e;
-  font-size: 0.85rem;
-}
-
-.editor-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1rem 0 0;
-}
-
-button.danger {
-  color: #cf222e;
-}
-
-.flashcards {
-  margin: 1rem 0 0;
-}
-
-.flashcards-progress {
-  margin: 0 0 0.5rem;
-  color: #57606a;
-  font-size: 0.9rem;
-}
-
-.flashcard {
-  min-height: 11rem;
-  padding: 1.25rem 1.5rem;
-  border: 1px solid #d0d7de;
-  border-radius: 10px;
-  background: #fff;
-  cursor: pointer;
-}
-
-.flashcard:focus-visible {
-  outline: 2px solid #0969da;
-  outline-offset: 2px;
-}
-
-.flashcard[data-revealed='false'] {
-  background: #f6f8fa;
-}
-
-.flashcard h3 {
-  margin: 0 0 0.75rem;
-}
-
-.flashcard ul {
-  margin: 0;
-  padding-left: 1.2rem;
-}
-
-.flashcard li {
-  margin: 0 0 0.35rem;
-}
-
-.flashcard-hint {
-  margin: 0;
-  color: #57606a;
-  font-style: italic;
-}
-
-.flashcards-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0.75rem 0 0;
+  .sheet,
+  .flashcard {
+    padding: var(--space-5) var(--space-4);
+  }
 }

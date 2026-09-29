@@ -170,7 +170,7 @@ export function SheetEditor({
         <button type="button" onClick={() => restructure(addSection(draft))}>
           Add a section
         </button>
-        <button type="submit" disabled={saving}>
+        <button type="submit" className="primary" disabled={saving}>
           {saving ? 'Saving…' : 'Save changes'}
         </button>
         <button type="button" onClick={onCancel} disabled={saving}>
