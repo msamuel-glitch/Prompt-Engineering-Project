@@ -1,4 +1,4 @@
-import type { StudySheet } from './api'
+import type { Section, StudySheet } from './api'
 
 // How much of the two printed pages a sheet fills.
 //
@@ -38,8 +38,8 @@ export function linesFor(text: string): number {
 
 /** Lines a whole sheet takes, section headings and source lines included. */
 export function estimateLines(sheet: StudySheet): number {
-  return sheet.sections.reduce((total, section) => {
-    const points = section.points.reduce((sum, point) => sum + linesFor(point), 0)
+  return sheet.sections.reduce((total: number, section: Section) => {
+    const points = section.points.reduce((sum: number, point: string) => sum + linesFor(point), 0)
     // One line for the heading, one for the sources, one blank line after.
     return total + linesFor(section.title) + points + 2
   }, 0)

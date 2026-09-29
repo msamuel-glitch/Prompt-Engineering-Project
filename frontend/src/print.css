@@ -18,6 +18,8 @@
   .notice,
   .warnings,
   .sheet-actions,
+  .sheet-tools,
+  .library,
   .fit-gauge {
     display: none !important;
   }

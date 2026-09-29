@@ -113,3 +113,77 @@
 .fit-caveat {
   color: #57606a;
 }
+
+.sheet-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+}
+
+.tag-editor {
+  display: flex;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.tag-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.library {
+  margin: 2.5rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid #d0d7de;
+}
+
+.library-empty {
+  color: #57606a;
+}
+
+.library-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.library-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid #eaeef2;
+}
+
+.library-list li[data-open='true'] {
+  background: #f6f8fa;
+}
+
+.library-meta,
+.library-tags {
+  color: #57606a;
+  font-size: 0.85rem;
+}
+
+.library-tags {
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: #eaeef2;
+}
+
+.badge {
+  color: #9a6700;
+  font-weight: 600;
+}
+
+.link-button.danger {
+  color: #cf222e;
+  margin-left: auto;
+}

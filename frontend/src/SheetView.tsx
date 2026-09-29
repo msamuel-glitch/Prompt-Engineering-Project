@@ -1,9 +1,9 @@
-import type { StudySheetResponse } from './api'
+import type { StoredSheet } from './api'
 import { estimateFit } from './fit'
 import { formatSources } from './sources'
 
 type Props = {
-  result: StudySheetResponse
+  result: StoredSheet
 }
 
 export function SheetView({ result }: Props) {
@@ -70,7 +70,7 @@ export function SheetView({ result }: Props) {
 
 // Saves the whole result, including the model and prompt version, for example
 // to keep outputs for the prompt evaluation.
-function downloadJson(result: StudySheetResponse) {
+function downloadJson(result: StoredSheet) {
   const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')

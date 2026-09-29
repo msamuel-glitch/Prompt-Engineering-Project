@@ -11,10 +11,89 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * List Sheets
+         * @description The subject library: saved sheets, newest first, filtered by tag.
+         */
+        get: operations["list_sheets_api_sheets_get"];
         put?: never;
         /** Create Sheet */
         post: operations["create_sheet_api_sheets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sheets/{sheet_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Sheet */
+        get: operations["read_sheet_api_sheets__sheet_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Sheet */
+        delete: operations["delete_sheet_api_sheets__sheet_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sheets/{sheet_id}/sheet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Edit Sheet
+         * @description Save the student's version. The version the AI wrote is kept aside.
+         */
+        put: operations["edit_sheet_api_sheets__sheet_id__sheet_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sheets/{sheet_id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore Sheet
+         * @description Undo every edit by putting the AI version back.
+         */
+        post: operations["restore_sheet_api_sheets__sheet_id__restore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sheets/{sheet_id}/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set Tags */
+        put: operations["set_tags_api_sheets__sheet_id__tags_put"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -81,21 +160,38 @@ export interface components {
              */
             sources: number[];
         };
-        /** StudySheet */
-        StudySheet: {
-            /**
-             * Title
-             * @description Title of the course
-             */
+        /**
+         * SheetSummary
+         * @description One row of the subject library.
+         */
+        SheetSummary: {
+            /** Id */
+            id: string;
+            /** Created At */
+            created_at: string;
+            /** Title */
             title: string;
-            /** Sections */
-            sections: components["schemas"]["Section"][];
+            /** File Name */
+            file_name: string;
+            /**
+             * Source Type
+             * @enum {string}
+             */
+            source_type: "page" | "slide";
+            /** Source Count */
+            source_count: number;
+            /** Word Count */
+            word_count: number;
+            /** Tags */
+            tags: string[];
+            /** Edited */
+            edited: boolean;
         };
         /**
-         * StudySheetResponse
-         * @description Result of uploading a course: the sheet and what we know about it.
+         * StoredSheet
+         * @description A saved sheet: the generation result plus what persistence adds.
          */
-        StudySheetResponse: {
+        StoredSheet: {
             /** File Name */
             file_name: string;
             /**
@@ -123,6 +219,35 @@ export interface components {
             generator: string;
             /** Prompt Version */
             prompt_version: string | null;
+            /** Id */
+            id: string;
+            /** Created At */
+            created_at: string;
+            /** Tags */
+            tags: string[];
+            /**
+             * Edited
+             * @description True once the student changed the version the AI wrote
+             */
+            edited: boolean;
+        };
+        /** StudySheet */
+        StudySheet: {
+            /**
+             * Title
+             * @description Title of the course
+             */
+            title: string;
+            /** Sections */
+            sections: components["schemas"]["Section"][];
+        };
+        /** TagsUpdate */
+        TagsUpdate: {
+            /**
+             * Tags
+             * @description Subject tags, replacing the current ones
+             */
+            tags: string[];
         };
         /** ValidationError */
         ValidationError: {
@@ -146,6 +271,37 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_sheets_api_sheets_get: {
+        parameters: {
+            query?: {
+                tag?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SheetSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     create_sheet_api_sheets_post: {
         parameters: {
             query?: never;
@@ -165,7 +321,168 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StudySheetResponse"];
+                    "application/json": components["schemas"]["StoredSheet"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_sheet_api_sheets__sheet_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sheet_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredSheet"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_sheet_api_sheets__sheet_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sheet_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_sheet_api_sheets__sheet_id__sheet_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sheet_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StudySheet"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredSheet"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    restore_sheet_api_sheets__sheet_id__restore_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sheet_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredSheet"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_tags_api_sheets__sheet_id__tags_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sheet_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TagsUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredSheet"];
                 };
             };
             /** @description Validation Error */
