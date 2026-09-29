@@ -6,6 +6,9 @@ import pytest
 from fpdf import FPDF
 from pptx import Presentation
 
+from app.main import app
+from app.sheets import get_db_path
+
 
 def _make_pdf(pages: list[str]) -> bytes:
     """One PDF page per string; an empty string gives a page without text."""
@@ -38,3 +41,12 @@ def make_pdf():
 @pytest.fixture
 def make_pptx():
     return _make_pptx
+
+
+@pytest.fixture(autouse=True)
+def temporary_database(tmp_path):
+    """Give every test its own database, never the one on the developer's disk."""
+    path = tmp_path / "sheets.db"
+    app.dependency_overrides[get_db_path] = lambda: path
+    yield path
+    app.dependency_overrides.pop(get_db_path, None)

@@ -31,7 +31,7 @@ def use_generator():
         app.dependency_overrides[get_generator] = lambda: generator
 
     yield install
-    app.dependency_overrides.clear()
+    app.dependency_overrides.pop(get_generator, None)
 
 
 def upload(file_name: str, data: bytes):

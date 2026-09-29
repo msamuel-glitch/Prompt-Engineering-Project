@@ -18,6 +18,7 @@ class Settings:
     claude_model: str
     prompt_version: str
     has_api_key: bool
+    db_path: Path
 
 
 def get_settings() -> Settings:
@@ -28,4 +29,6 @@ def get_settings() -> Settings:
         has_api_key=bool(
             os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN")
         ),
+        # Saved sheets live outside Git: data/ is ignored, like local courses.
+        db_path=Path(os.getenv("STUDY_SHEET_DB", BACKEND_DIR / "data" / "sheets.db")),
     )

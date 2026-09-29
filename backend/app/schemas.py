@@ -38,3 +38,32 @@ class StudySheetResponse(BaseModel):
     )
     generator: str = Field(description='Model that wrote the sheet, or "fake"')
     prompt_version: str | None
+
+
+class StoredSheet(StudySheetResponse):
+    """A saved sheet: the generation result plus what persistence adds."""
+
+    id: str
+    created_at: str
+    tags: list[str]
+    edited: bool = Field(
+        description="True once the student changed the version the AI wrote"
+    )
+
+
+class SheetSummary(BaseModel):
+    """One row of the subject library."""
+
+    id: str
+    created_at: str
+    title: str
+    file_name: str
+    source_type: SourceType
+    source_count: int
+    word_count: int
+    tags: list[str]
+    edited: bool
+
+
+class TagsUpdate(BaseModel):
+    tags: list[str] = Field(description="Subject tags, replacing the current ones")
