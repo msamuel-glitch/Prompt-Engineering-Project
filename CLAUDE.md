@@ -24,9 +24,12 @@ current stage is project definition; application implementation comes afterward.
 - Read the current milestone and relevant folder README before making changes.
 - Keep changes small and focused. Record completed work and the next step in
   docs/PLAN.md; do not mark tasks done before checking them.
-- Once the team establishes a shared base branch, use short-lived branches and
-  pull requests targeting that branch. Do not rename shared branches or rewrite
+- `main` is the shared base branch. Work on short-lived branches (for example
+  `feature/...`, `fix/...` or `docs/...`) and merge them through pull requests
+  reviewed by another team member. Do not rename shared branches or rewrite
   shared history as part of routine implementation.
+- Record significant AI assistance in docs/JOURNAL.md and keep the
+  `Co-Authored-By` trailer on commits prepared with an AI assistant.
 - Keep dependencies in the backend and frontend manifests once those exist.
   Commit the selected package manager's lockfiles for reproducible installs.
 - When behavior is implemented, add meaningful checks for it and document the

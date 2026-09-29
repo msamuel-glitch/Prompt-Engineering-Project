@@ -33,8 +33,9 @@ documentation accurately distinguishes planned features from working software.
 - [ ] Confirm team roles, deadline and the package manager to use.
 - [ ] Verify Python 3.11+, a supported Node.js release satisfying the brief's 20+
       requirement, Git and editor tooling on developer machines.
-- [ ] Establish the team's main branch and branch protection on GitHub. At the
-      initial inspection, the remote exposed only mary; main does not yet exist.
+- [x] Create the shared `main` branch from `mary` (29 Sept.).
+- [ ] Make `main` the default branch and require a reviewed pull request to merge
+      into it (repository owner, in the GitHub settings).
 - [ ] Set up a GitHub Projects board with Todo, In progress, In review and Done.
 - [ ] Scaffold FastAPI with a health endpoint and explicit Python dependencies.
 - [ ] Scaffold React + Vite + TypeScript and commit its dependency lockfile.
@@ -113,3 +114,4 @@ likely exam questions and course gap detection.
 | Milestone | Result | Next action |
 | --- | --- | --- |
 | 1 | Repository layout and conventions added; README rewritten and project background documented locally. Application implementation has not started. | Resolve pre-development decisions in PROJECT_BRIEF.md, then begin development setup. |
+| 1–2 | 29 Sept.: `main` created, empty test file removed, README completed with the sections required by the course guidelines, project journal started. | Owner: make `main` the default and protected branch. Team: fill in names and roles in the README. |
