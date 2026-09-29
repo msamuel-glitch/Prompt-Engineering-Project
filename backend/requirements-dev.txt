@@ -1,13 +1,13 @@
 # Development dependencies: runtime plus the test tools.
-# Direct dependencies: pytest and httpx2 (used by FastAPI's TestClient).
+# Direct dependencies: pytest, and fpdf2 to build PDF files in tests.
 -r requirements.txt
 
 Pygments==2.21.0
 colorama==0.4.6; sys_platform == "win32"
-httpcore2==2.13.1
-httpx2==2.13.1
+defusedxml==0.7.1
+fonttools==4.66.0
+fpdf2==2.8.8
 iniconfig==2.3.0
 packaging==26.3
 pluggy==1.6.0
 pytest==9.1.1
-truststore==0.10.4
