@@ -11,7 +11,9 @@ prompts/
 ├── examples/                               synthetic test inputs
 │   ├── synthetic_course_regression_fr.md   course S1 as extracted text
 │   ├── synthetic_course_regression_fr.pptx the same course as a PowerPoint file
-│   └── build_synthetic_pptx.py             rebuilds the .pptx from the .md
+│   ├── injection_course_marketing_fr.md    course S2, with hidden instructions
+│   ├── injection_course_marketing_fr.pptx  the same course as a PowerPoint file
+│   └── build_synthetic_pptx.py             builds a .pptx from a course .md
 └── study-sheet/
     ├── v1_initial_prompt.md                one file per version
     ├── v2_structured_prompt.md
@@ -27,6 +29,9 @@ prompts/
 
 The application reads its prompt from these files (`backend/app/prompts.py`):
 the version it uses is set by `STUDY_SHEET_PROMPT_VERSION` in `backend/.env`.
+Without an API key, its copy-paste mode prepares the same prompt to run on
+claude.ai for free, with the "Copy-paste addition" of the version file appended
+(see [v2](study-sheet/v2_structured_prompt.md#copy-paste-addition)).
 
 ## Method
 
