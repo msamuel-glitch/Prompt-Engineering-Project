@@ -29,9 +29,14 @@ Open http://localhost:5173. The header shows "API: connected" when the backend
 answers. During development, Vite forwards every request starting with `/api` to
 the backend on http://127.0.0.1:8000 (see `vite.config.ts`).
 
-To try the interface without an API key, start the backend with
-`STUDY_SHEET_GENERATOR=fake` and upload
+Without an API key, the New sheet page shows the free copy-paste mode: prepare the
+prompt for a course, run it on claude.ai, paste the reply back. With a key, the
+same mode stays available below the upload. To try the interface without any
+AI, start the backend with `STUDY_SHEET_GENERATOR=fake` and upload
 `prompts/examples/synthetic_course_regression_fr.pptx`.
+
+On Windows, `start.bat` at the root of the repository starts the backend and the
+site together.
 
 ## Check
 
@@ -65,6 +70,7 @@ current version expects TypeScript 5, while this project uses TypeScript 6.
 | `src/Nav.tsx` | Site header: the RectoVerso mark, the tabs, the connection and generator badges |
 | `src/Home.tsx` | Landing page: what the application does, how it works and what it does not do |
 | `src/UploadForm.tsx` | File picker and generate button |
+| `src/CopyPasteFlow.tsx` | Free copy-paste mode: prepare the prompt, run it on claude.ai, import the answer |
 | `src/SheetView.tsx` | Display of a sheet, with the print button and the two-page gauge |
 | `src/SheetEditor.tsx` | Form to rewrite, add, remove and reorder the sections |
 | `src/Flashcards.tsx` | Revision mode: one card per section, reveal and shuffle |

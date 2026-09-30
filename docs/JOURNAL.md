@@ -98,3 +98,45 @@ Template:
     real SDK over a fake network layer, but not against the live API.
 - **Next:** add an API key; run prompts v1 and v2 on S1 and real courses and fill
   in the evaluation; save sheets in SQLite.
+
+## 2026-09-29 to 30 — Saving, editing, library, printing, flashcards
+
+Written from the commits of @condet-bit on `feature/print-two-pages`; details
+and decisions to be completed by condet-bit.
+
+- **Done:** two-page A4 print stylesheet with a fill estimate; sheets saved in
+  SQLite with the AI version kept aside, editing and restoration; subject tags,
+  folders and a library of cards; flashcards derived from the sections; a
+  `fixture` generator serving a recorded v2 sheet for demonstrations; the site
+  design and the name RectoVerso; a first, provisional v2 run on S1.
+- **AI usage:** Claude Code with Claude Opus 5, according to the
+  `Co-Authored-By` trailers of the thirteen commits.
+- **Problems / failures:** recorded in the plan's progress log, among them a
+  placeholder sheet indistinguishable from a real summary, which led to showing
+  how each sheet was made.
+
+## 2026-09-30 — No API budget: free copy-paste mode, injection test, launcher
+
+- **AI usage:** Claude Code (Claude Opus 5.5) reviewed the state of the project,
+  then wrote the copy-paste mode, the S2 course, `start.bat` and their tests.
+- **Decisions:**
+  - No API spending for now. The copy-paste mode prepares the application's
+    exact prompt for claude.ai, whose free plan works, and imports the answer
+    through the same validation and checks. The application cannot know which
+    model claude.ai used, so imported sheets say "claude.ai (copy-paste)".
+  - Since claude.ai cannot enforce the output schema, the v2 prompt file
+    documents a "Copy-paste addition" asking for the JSON schema in text. Runs
+    made this way are a separate condition, compared only with each other.
+  - S2 hides two instructions in an ordinary course, to study prompt injection
+    as the guidelines ask: one obvious, one that would add a false statement.
+  - `start.bat` starts everything on Windows, so trying the project does not
+    require knowing pip or npm.
+- **Problems / failures:**
+  - The first attempt at a real test failed: the copy of the project used for it
+    had no `backend/.env`, so no key. Nothing was charged.
+  - The browser built into the development tool refused clipboard access, so
+    the "Copy the prompt" button now falls back to selecting the text.
+  - The copy-paste mode was tested by importing the recorded S1 sheet, not with a
+    live claude.ai run.
+- **Next:** run v1 and v2 on S1 and S2 on claude.ai and have a teammate score
+  them; open, review and merge the pending pull requests in order.

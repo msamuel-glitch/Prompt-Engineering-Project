@@ -6,11 +6,13 @@ Work through the milestones in order. For each task, agree on the expected resul
 implement a small change, run the relevant checks, and record the outcome here.
 Use focused commits and reviewable pull requests once the team workflow is set up.
 
-Current milestone: **4 — Upload-to-sheet pipeline**. The flow works from upload
-to display, but sheets are not saved and the prompt has not been evaluated.
-Open items remain in milestones 1–3.
-Next action: add an Anthropic API key (milestone 2), then run the prompt
-evaluation (prompt track below).
+Current milestone: **5–6 — Editing, print, library and study aids**. Sheets are
+saved, edited, filed, printed and revised with flashcards. The quiz is not built,
+no sheet has been generated with a live API key and the prompts have not been
+evaluated. Open items remain in milestones 1–4.
+Next action: without an API budget, run prompts v1 and v2 on S1 and S2 on
+claude.ai through the copy-paste mode, and have a teammate who did not write
+them score the runs (prompt track below).
 
 ## Prompt track (in parallel with milestones 2–4)
 
@@ -164,3 +166,4 @@ likely exam questions and course gap detection.
 | Prompt track | 30 Sept.: a v2 output on S1 recorded as evidence, and a `fixture` generator that serves it so the application can be shown with real content without a key. It covers the eight key points and avoids the three traps, but it did not come from the application and was scored by its own author. | Re-score it blind, and replace it with three application runs as soon as an API key is available. |
 | 5 | 30 Sept.: the interface becomes a site rather than one page — a RectoVerso header with tabs, a home page stating what the application does and does not do, and the library as cards previewing each sheet's first headings. | Have a student outside the team try it and watch where they hesitate. |
 | 5 | 30 Sept.: folders in the library, and how a sheet was made shown on its card and above the sheet itself. A placeholder was indistinguishable from a real summary, which cost a teammate a wasted reading. | Build the quiz once a key is available. |
+| Prompt track | 30 Sept.: the team decided not to pay for API calls for now. A free copy-paste mode prepares the application's prompt for claude.ai and imports the answer with the same checks; it was tested by importing the recorded S1 sheet, not yet on claude.ai. A second synthetic course, S2, tests prompt injection. `start.bat` starts the whole application on Windows. | Run v1 and v2 on S1 and S2 on claude.ai, three runs each, and have them scored by a teammate who did not write the prompts. |

@@ -7,7 +7,8 @@ is the promise: a whole lecture, front and back of one sheet.
 **Status: the core flow works end to end.** Upload a PDF or PowerPoint course
 and get a study sheet whose sections cite the pages or slides they come from,
 with automatic checks on those references. Save it, correct it, file it under a
-subject, revise it with flashcards and print it on two A4 pages. The quiz is not
+subject, revise it with flashcards and print it on two A4 pages. Without an API
+key, a free copy-paste mode runs the same prompt on claude.ai. The quiz is not
 built, and no sheet has yet been generated with a live API key. See
 [Final result](#final-result).
 
@@ -130,19 +131,27 @@ progress before moving on. Bonus features come after a stable core demo.
 
 ## Installation / access
 
-The application runs locally in two parts, each with its own instructions:
+**On Windows, the quickest way:** install Python 3.11+ and Node.js (LTS), then
+double-click `start.bat`. It installs what is needed, starts the backend and the
+site in two windows and opens http://localhost:5173. Close the two windows to
+stop.
 
-1. The [backend](backend/README.md) (Python 3.11+): install, add an Anthropic
-   API key to `backend/.env`, then start it with `uvicorn`.
+**Step by step, on any system:** the application runs in two parts, each with
+its own instructions:
+
+1. The [backend](backend/README.md) (Python 3.11+): install, optionally add an
+   Anthropic API key to `backend/.env`, then start it with `uvicorn`.
 2. The [frontend](frontend/README.md) (Node.js 20.19+ or 22.12+): `npm install`,
    then `npm run dev`, and open http://localhost:5173.
 
-Without an API key, set `STUDY_SHEET_GENERATOR=fake` in `backend/.env` to try the
-interface with placeholder sheets, and upload the synthetic course
-`prompts/examples/synthetic_course_regression_fr.pptx`.
+**Without an API key, nothing to configure.** The New sheet page switches to the
+free copy-paste mode: the application prepares the prompt for your course, you
+run it on claude.ai (the free plan works) and paste the answer back. To try the
+interface without any AI, set `STUDY_SHEET_GENERATOR=fake` or `fixture` in
+`backend/.env`. The synthetic courses in `prompts/examples/` are ready to upload.
 
-Create the API key with a spending limit. Keep credentials out of Git and local
-course files under the ignored `data/local/` directory.
+If you use an API key, create it with a spending limit. Keep credentials out of
+Git and local course files under the ignored `data/local/` directory.
 
 ## AI usage
 
@@ -150,7 +159,9 @@ AI has two roles in this project.
 
 **In the product.** The backend sends the extracted course text to the Claude API,
 which returns the study sheet as structured data validated against a schema;
-flashcards, quiz questions and subject tags will follow. The application reads
+flashcards, quiz questions and subject tags will follow. Without an API key, the
+copy-paste mode lets the student run the same prompt on claude.ai and import the
+answer, which goes through the same validation and checks. The application reads
 its prompt from the versioned files in [prompts/](prompts/README.md), where each
 version is documented with its evaluation criteria, so that every change is
 compared with the previous version on the same test courses.
@@ -164,7 +175,8 @@ what was changed and why. Commits prepared with Claude Code carry a
 | Tool | Role |
 | --- | --- |
 | Claude API | Generation of study sheets in the backend (`claude-opus-5-5` by default, structured output) |
-| Claude Code | Repository audit against the course guidelines, documentation, prompts v1 and v2, application skeletons and the upload-to-sheet feature (29 Sept.) |
+| claude.ai | Free alternative to the API: runs the prompt prepared by the copy-paste mode |
+| Claude Code (Claude Opus 5 and 5.5) | Repository audit against the course guidelines, documentation, prompts v1 and v2, the S1 and S2 test courses and most of the application code; each commit it prepared carries a `Co-Authored-By` trailer |
 | TODO | Other assistants used by team members |
 
 ## Main challenges
@@ -182,6 +194,10 @@ This section will grow during the project. Details are kept in the
   the team had an API key. A fake generator builds placeholder sheets, and the
   tests run the real Anthropic SDK against a fake network layer, so everything
   except the model's actual answers could be checked for free.
+- **No API budget.** On 30 Sept. we decided not to pay for API calls for now.
+  Rather than showing only placeholders, the copy-paste mode keeps real Claude
+  output within reach through claude.ai's free plan, at the cost of a manual
+  step and of a model the application does not choose.
 
 ## Final result
 
@@ -202,6 +218,8 @@ What works today (30 Sept.):
 - Revising with flashcards derived from the sections, so they follow every edit
   instead of going stale.
 - Downloading the result as JSON, for example to keep evaluation outputs.
+- Getting a real sheet without an API key: the copy-paste mode prepares the
+  prompt for claude.ai and imports the answer, with the same checks.
 
 **Not yet: the quiz**, its confidence score and the review badges on weak
 sections. It is the one study aid the brief asks the AI for, so it needs a key.
@@ -212,7 +230,8 @@ it against the real API. One run of prompt v2 on the synthetic course is
 recorded in [outputs/study-sheet/v2/](outputs/study-sheet/v2/) — produced in a
 Claude Code session rather than by the application, and scored by its own
 author, both of which are stated there. The demonstration mode serves that
-recording so the application can be shown with real content.
+recording so the application can be shown with real content. The copy-paste mode
+was tested by importing that same recording; no one has run it on claude.ai yet.
 
 [PLAN.md](docs/PLAN.md) tracks progress.
 

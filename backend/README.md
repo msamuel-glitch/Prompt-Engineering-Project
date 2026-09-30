@@ -44,7 +44,8 @@ Git: never commit it.
 
 The backend reads `.env` when it starts: restart it after changing the file
 (`--reload` only watches Python files). Without a key and with the `claude`
-generator, uploads return an error that explains what to set.
+generator, uploads return an error that explains what to set, and the interface
+offers the free copy-paste mode instead (see below).
 
 ## Run
 
@@ -57,8 +58,10 @@ by FastAPI is at http://127.0.0.1:8000/docs, where each route can be tried.
 
 | Route | Purpose |
 | --- | --- |
-| `GET /api/health` | Returns `{"status":"ok"}` when the API runs |
+| `GET /api/health` | Returns `{"status":"ok"}` when the API runs, the generator in use and whether a key is set (never the key) |
 | `POST /api/sheets` | Takes a course file (`file`, PDF or PPTX, up to 30 MB), saves the sheet and returns it |
+| `POST /api/sheets/prompt` | Copy-paste mode: takes a course file and returns the prompt to run on claude.ai. `?version=v1` gives the free-text v1 prompt, for evaluation |
+| `POST /api/sheets/import` | Copy-paste mode: takes the course file again and Claude's pasted `answer`, then validates, checks and saves the sheet |
 | `GET /api/sheets` | The library: saved sheets, newest first. `?folder=` keeps one folder, `?folder=` with no value the unfiled ones, `?tag=` one subject tag |
 | `GET /api/sheets/{id}` | One saved sheet |
 | `PUT /api/sheets/{id}/sheet` | Replaces the student's version; the AI version is kept aside |
@@ -102,6 +105,22 @@ it is not, and content from one course never reaches a sheet about another.
 to the connection state so a student knows whether to expect a real summary, a
 recording or a placeholder before uploading anything.
 
+## Free copy-paste mode
+
+Without a key, the application cannot call Claude, but a student can: claude.ai
+has a free plan. `paste.py` prepares the exact prompt for a course (the same
+template as the API, filled with the extracted text) and appends the
+"Copy-paste addition" of the prompt file, which asks for the `StudySheet` JSON
+schema in text since claude.ai cannot enforce it. The student sends it on
+claude.ai and pastes the reply back.
+
+The reply is read even when Claude wraps the JSON in a code block or a sentence,
+validated against `StudySheet`, checked against the course like any generated
+sheet, and saved with the generator `claude.ai (copy-paste)`. An unusable reply
+is refused with the reason and nothing is saved. The model is whichever one
+claude.ai used, which the application cannot know: record it by hand when the
+run is part of an evaluation.
+
 ## Folders
 
 A folder exists because a sheet is in it. Naming one on a sheet creates it,
@@ -141,7 +160,8 @@ replace the API with fakes, including a fake network layer under the real SDK.
 | Path | Content |
 | --- | --- |
 | `app/main.py` | FastAPI application and health route |
-| `app/sheets.py` | Upload route and choice of generator |
+| `app/sheets.py` | Sheet routes and choice of generator |
+| `app/paste.py` | Copy-paste mode: prompt for claude.ai and reading of the pasted answer |
 | `app/extraction.py` | Text extraction from PDF and PPTX files |
 | `app/prompts.py` | Loading of the versioned prompts |
 | `app/generation.py` | Claude and placeholder generators |
