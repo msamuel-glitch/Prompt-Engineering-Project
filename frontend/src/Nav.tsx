@@ -21,6 +21,7 @@ const statusLabels: Record<ApiStatus, string> = {
 // uploading anything rather than being surprised by a placeholder.
 const generatorLabels: Record<string, string> = {
   claude: 'AI summaries',
+  paste: 'copy-paste with claude.ai',
   fixture: 'demo mode',
   fake: 'placeholders, no AI',
 }

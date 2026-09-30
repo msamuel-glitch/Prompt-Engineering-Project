@@ -28,6 +28,52 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sheets/prompt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Prepare Prompt
+         * @description Free copy-paste mode, step 1: the exact prompt to run on claude.ai.
+         *
+         *     `version` defaults to the application's prompt version. Asking for v1
+         *     gives its free-text prompt, useful to evaluate it on a real course.
+         */
+        post: operations["prepare_prompt_api_sheets_prompt_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sheets/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import Sheet
+         * @description Free copy-paste mode, step 2: save the sheet Claude wrote on claude.ai.
+         *
+         *     The course is sent again so that the checks can compare the sheet's source
+         *     numbers with the file, exactly as for a generated sheet.
+         */
+        post: operations["import_sheet_api_sheets_import_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/folders": {
         parameters: {
             query?: never;
@@ -175,6 +221,26 @@ export interface components {
             /** File */
             file: string;
         };
+        /** Body_import_sheet_api_sheets_import_post */
+        Body_import_sheet_api_sheets_import_post: {
+            /** File */
+            file: string;
+            /**
+             * Answer
+             * @description Claude's reply, pasted from claude.ai
+             */
+            answer: string;
+            /**
+             * Prompt Version
+             * @default
+             */
+            prompt_version: string;
+        };
+        /** Body_prepare_prompt_api_sheets_prompt_post */
+        Body_prepare_prompt_api_sheets_prompt_post: {
+            /** File */
+            file: string;
+        };
         /** FolderUpdate */
         FolderUpdate: {
             /**
@@ -201,6 +267,38 @@ export interface components {
              * @description How sheets are made: "claude", "fixture" or "fake"
              */
             generator: string;
+            /**
+             * Has Api Key
+             * @description Whether an Anthropic API key is configured (never the key itself). Without one, the interface offers the free copy-paste mode.
+             */
+            has_api_key: boolean;
+        };
+        /**
+         * PastePrompt
+         * @description A prompt prepared for the free copy-paste mode, to run on claude.ai.
+         */
+        PastePrompt: {
+            /** File Name */
+            file_name: string;
+            /**
+             * Source Type
+             * @enum {string}
+             */
+            source_type: "page" | "slide";
+            /** Source Count */
+            source_count: number;
+            /** Prompt Version */
+            prompt_version: string;
+            /**
+             * Prompt
+             * @description Full text to paste into claude.ai
+             */
+            prompt: string;
+            /**
+             * Importable
+             * @description True if the answer is JSON the application can import; false for free-text versions such as v1, evaluated by hand
+             */
+            importable: boolean;
         };
         /** Section */
         Section: {
@@ -394,6 +492,74 @@ export interface operations {
         requestBody: {
             content: {
                 "multipart/form-data": components["schemas"]["Body_create_sheet_api_sheets_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredSheet"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    prepare_prompt_api_sheets_prompt_post: {
+        parameters: {
+            query?: {
+                version?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_prepare_prompt_api_sheets_prompt_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PastePrompt"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    import_sheet_api_sheets_import_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_import_sheet_api_sheets_import_post"];
             };
         };
         responses: {

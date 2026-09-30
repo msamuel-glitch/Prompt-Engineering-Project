@@ -13,6 +13,7 @@ import {
   type StoredSheet,
   type StudySheet,
 } from './api'
+import { CopyPasteFlow } from './CopyPasteFlow'
 import { Flashcards } from './Flashcards'
 import { Home } from './Home'
 import { Library } from './Library'
@@ -33,13 +34,14 @@ const generatorNotes: Record<string, string> = {
 }
 
 const KEY_HINT =
-  'For real summaries, set ANTHROPIC_API_KEY and STUDY_SHEET_GENERATOR=claude in backend/.env, then restart the backend.'
+  'For real summaries at no cost, use the copy-paste mode with claude.ai below. With an API key, set ANTHROPIC_API_KEY and STUDY_SHEET_GENERATOR=claude in backend/.env, then restart the backend.'
 
 function App() {
   const [view, setView] = useState<View>('home')
   const [editing, setEditing] = useState(false)
   const [apiStatus, setApiStatus] = useState<ApiStatus>('checking')
   const [generator, setGenerator] = useState<string | null>(null)
+  const [hasKey, setHasKey] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -58,10 +60,11 @@ function App() {
   useEffect(() => {
     fetch('/api/health')
       .then((response) => response.json())
-      .then((body: { status?: string; generator?: string }) => {
+      .then((body: { status?: string; generator?: string; has_api_key?: boolean }) => {
         const reachable = body.status === 'ok'
         setApiStatus(reachable ? 'ok' : 'unreachable')
         setGenerator(body.generator ?? null)
+        setHasKey(body.has_api_key ?? false)
         if (reachable) {
           void refreshLibrary()
         }
@@ -98,6 +101,13 @@ function App() {
     setGenerating(false)
   }
 
+  async function handleImported(sheet: StoredSheet) {
+    setEditing(false)
+    if (await run(async () => sheet)) {
+      setView('sheet')
+    }
+  }
+
   async function handleOpen(id: string) {
     setEditing(false)
     if (await run(() => readSheet(id))) {
@@ -132,6 +142,9 @@ function App() {
   }
 
   const modeNote = generator ? generatorNotes[generator] : undefined
+  // Without a key, the claude generator cannot run: copy-paste becomes the way
+  // to get a real summary, instead of an upload that would fail.
+  const pasteOnly = generator === 'claude' && !hasKey
 
   return (
     <div className="site">
@@ -141,7 +154,7 @@ function App() {
         libraryCount={library.length}
         openTitle={open?.sheet.title ?? null}
         apiStatus={apiStatus}
-        generator={generator}
+        generator={pasteOnly ? 'paste' : generator}
       />
 
       <main className="site-main">
@@ -164,18 +177,37 @@ function App() {
               </p>
             </header>
 
-            <UploadForm onUpload={handleUpload} disabled={generating} />
+            {pasteOnly ? (
+              <>
+                <p className="notice" role="note">
+                  No API key is configured, so the application prepares the prompt
+                  and you run it on claude.ai, for free. The sheet you bring back is
+                  checked and saved like any other.
+                </p>
+                <CopyPasteFlow onImported={handleImported} />
+              </>
+            ) : (
+              <>
+                <UploadForm onUpload={handleUpload} disabled={generating} />
 
-            {modeNote && (
-              <p className="notice warn" role="note">
-                {modeNote} {KEY_HINT}
-              </p>
-            )}
+                {modeNote && (
+                  <p className="notice warn" role="note">
+                    {modeNote} {KEY_HINT}
+                  </p>
+                )}
 
-            {generating && (
-              <p className="notice" role="status">
-                Generating the study sheet… This can take a minute for a long course.
-              </p>
+                {generating && (
+                  <p className="notice" role="status">
+                    Generating the study sheet… This can take a minute for a long
+                    course.
+                  </p>
+                )}
+
+                <details className="paste-alternative">
+                  <summary>Or copy-paste with claude.ai, for free</summary>
+                  <CopyPasteFlow onImported={handleImported} />
+                </details>
+              </>
             )}
 
             <div className="info-panel">

@@ -7,6 +7,7 @@ export type SheetSummary = components['schemas']['SheetSummary']
 export type StudySheet = components['schemas']['StudySheet']
 export type Section = components['schemas']['Section']
 export type SourceType = StoredSheet['source_type']
+export type PastePrompt = components['schemas']['PastePrompt']
 
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, options)
@@ -37,6 +38,26 @@ export async function generateSheet(file: File): Promise<StoredSheet> {
   const form = new FormData()
   form.append('file', file)
   return request<StoredSheet>('/api/sheets', { method: 'POST', body: form })
+}
+
+/** Free copy-paste mode, step 1: the prompt to run on claude.ai. */
+export async function preparePrompt(file: File): Promise<PastePrompt> {
+  const form = new FormData()
+  form.append('file', file)
+  return request<PastePrompt>('/api/sheets/prompt', { method: 'POST', body: form })
+}
+
+/** Free copy-paste mode, step 2: save the sheet from Claude's pasted answer. */
+export async function importSheet(
+  file: File,
+  answer: string,
+  promptVersion: string,
+): Promise<StoredSheet> {
+  const form = new FormData()
+  form.append('file', file)
+  form.append('answer', answer)
+  form.append('prompt_version', promptVersion)
+  return request<StoredSheet>('/api/sheets/import', { method: 'POST', body: form })
 }
 
 /** The library, newest first, optionally narrowed to one subject tag. */
