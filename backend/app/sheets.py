@@ -1,13 +1,19 @@
 """/api/sheets: generate a study sheet from a course, then keep it."""
 
 from pathlib import Path
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile
 
 from app import storage
 from app.checks import check_sheet, count_words, describe
 from app.config import get_settings
-from app.extraction import ExtractionError, UnsupportedFileError, extract_course
+from app.extraction import (
+    Course,
+    ExtractionError,
+    UnsupportedFileError,
+    extract_course,
+)
 from app.generation import (
     ClaudeSheetGenerator,
     FakeSheetGenerator,
@@ -15,9 +21,11 @@ from app.generation import (
     GenerationError,
     SheetGenerator,
 )
+from app.paste import PASTE_GENERATOR, AnswerError, build_paste_prompt, parse_answer
 from app.prompts import PromptNotFoundError, load_prompt
 from app.schemas import (
     FolderUpdate,
+    PastePrompt,
     SheetSummary,
     StoredSheet,
     StudySheet,
@@ -104,12 +112,8 @@ def found(record_id: str, path: Path) -> storage.Record:
         raise HTTPException(404, str(error)) from error
 
 
-@router.post("/api/sheets", response_model=StoredSheet)
-def create_sheet(
-    file: UploadFile,
-    generator: SheetGenerator = Depends(get_generator),
-    db_path: Path = Depends(get_db_path),
-) -> StoredSheet:
+def read_course(file: UploadFile) -> tuple[Course, str]:
+    """Extract an uploaded course, turning each problem into a clear HTTP error."""
     data = file.file.read(MAX_FILE_BYTES + 1)
     if len(data) > MAX_FILE_BYTES:
         raise HTTPException(413, "The file is larger than 30 MB.")
@@ -129,6 +133,16 @@ def create_sheet(
             f"The course is too long for one request ({characters:,} characters, "
             f"limit {MAX_COURSE_CHARACTERS:,}). Try a shorter part of it.",
         )
+    return course, file_name
+
+
+@router.post("/api/sheets", response_model=StoredSheet)
+def create_sheet(
+    file: UploadFile,
+    generator: SheetGenerator = Depends(get_generator),
+    db_path: Path = Depends(get_db_path),
+) -> StoredSheet:
+    course, file_name = read_course(file)
 
     try:
         sheet = generator.generate(course)
@@ -143,6 +157,60 @@ def create_sheet(
         empty_units=course.empty_units,
         generator=generator.name,
         prompt_version=generator.prompt_version,
+        sheet=sheet,
+    )
+    return as_response(record)
+
+
+@router.post("/api/sheets/prompt", response_model=PastePrompt)
+def prepare_prompt(file: UploadFile, version: str | None = None) -> PastePrompt:
+    """Free copy-paste mode, step 1: the exact prompt to run on claude.ai.
+
+    `version` defaults to the application's prompt version. Asking for v1
+    gives its free-text prompt, useful to evaluate it on a real course.
+    """
+    course, file_name = read_course(file)
+    version = version or get_settings().prompt_version
+    try:
+        prompt, importable = build_paste_prompt(course, version)
+    except PromptNotFoundError as error:
+        raise HTTPException(404, str(error)) from error
+    return PastePrompt(
+        file_name=file_name,
+        source_type=course.source_type,
+        source_count=len(course.units),
+        prompt_version=version,
+        prompt=prompt,
+        importable=importable,
+    )
+
+
+@router.post("/api/sheets/import", response_model=StoredSheet)
+def import_sheet(
+    file: UploadFile,
+    answer: Annotated[str, Form(description="Claude's reply, pasted from claude.ai")],
+    prompt_version: Annotated[str, Form()] = "",
+    db_path: Path = Depends(get_db_path),
+) -> StoredSheet:
+    """Free copy-paste mode, step 2: save the sheet Claude wrote on claude.ai.
+
+    The course is sent again so that the checks can compare the sheet's source
+    numbers with the file, exactly as for a generated sheet.
+    """
+    course, file_name = read_course(file)
+    try:
+        sheet = parse_answer(answer)
+    except AnswerError as error:
+        raise HTTPException(422, str(error)) from error
+
+    record = storage.save(
+        db_path,
+        file_name=file_name,
+        source_type=course.source_type,
+        source_count=len(course.units),
+        empty_units=course.empty_units,
+        generator=PASTE_GENERATOR,
+        prompt_version=prompt_version or get_settings().prompt_version,
         sheet=sheet,
     )
     return as_response(record)

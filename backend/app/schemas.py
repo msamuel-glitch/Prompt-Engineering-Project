@@ -83,3 +83,17 @@ class FolderUpdate(BaseModel):
     folder: str = Field(
         default="", description="Folder to file the sheet in; empty leaves it unfiled"
     )
+
+
+class PastePrompt(BaseModel):
+    """A prompt prepared for the free copy-paste mode, to run on claude.ai."""
+
+    file_name: str
+    source_type: SourceType
+    source_count: int
+    prompt_version: str
+    prompt: str = Field(description="Full text to paste into claude.ai")
+    importable: bool = Field(
+        description="True if the answer is JSON the application can import; "
+        "false for free-text versions such as v1, evaluated by hand"
+    )

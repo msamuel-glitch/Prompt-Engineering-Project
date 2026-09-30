@@ -69,6 +69,24 @@ Set in `backend/app/generation.py`: model from `CLAUDE_MODEL` (default
 `claude-opus-5-5`), effort `medium`, `max_tokens` 16,000, a single user message,
 and the API's refusal fallback enabled. Record the model with every result.
 
+## Copy-paste addition
+
+In the application's free copy-paste mode, the student runs the prompt on
+claude.ai, which cannot enforce the schema. The application then appends the
+block below to the prompt, with `{schema}` replaced by the JSON schema of
+`StudySheet`, field descriptions included, and reads the JSON answer the student
+pastes back (`backend/app/paste.py`).
+
+```text
+Answer with one JSON object only, with no text before or after it, matching this JSON schema:
+{schema}
+```
+
+This is a different condition from the API: the schema is asked for in text
+instead of being enforced, and the model and settings are claude.ai's. Record
+runs made this way as "claude.ai (copy-paste)" and compare them only with runs
+made the same way.
+
 ## What to check
 
 1. **Quality compared with v1.** Does the structured format lower coverage or

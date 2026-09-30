@@ -20,6 +20,10 @@ class HealthResponse(BaseModel):
     generator: str = Field(
         description='How sheets are made: "claude", "fixture" or "fake"'
     )
+    has_api_key: bool = Field(
+        description="Whether an Anthropic API key is configured (never the key "
+        "itself). Without one, the interface offers the free copy-paste mode."
+    )
 
 
 # Routes live under /api so that the frontend dev server can forward them.
@@ -30,4 +34,7 @@ def health() -> HealthResponse:
     The interface shows the generator so a student knows whether to expect a
     real summary, a recorded one or a placeholder before uploading anything.
     """
-    return HealthResponse(status="ok", generator=get_settings().generator)
+    settings = get_settings()
+    return HealthResponse(
+        status="ok", generator=settings.generator, has_api_key=settings.has_api_key
+    )
