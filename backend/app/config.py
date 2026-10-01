@@ -16,10 +16,12 @@ load_dotenv(BACKEND_DIR / ".env")
 
 @dataclass(frozen=True)
 class Settings:
-    generator: str  # "claude", or "fake" to build placeholder sheets without AI
+    generator: str  # "claude", "gemini", "fixture", or "fake" (placeholders, no AI)
     claude_model: str
+    gemini_model: str
+    gemini_fallback_model: str
     prompt_version: str
-    has_api_key: bool
+    has_api_key: bool  # a key for the selected generator, never the key itself
     db_path: Path
     fixture_path: Path
 
@@ -34,13 +36,22 @@ def setting(name: str, default: str) -> str:
 
 
 def get_settings() -> Settings:
-    return Settings(
-        generator=setting("STUDY_SHEET_GENERATOR", "claude"),
-        claude_model=setting("CLAUDE_MODEL", "claude-opus-5-5"),
-        prompt_version=setting("STUDY_SHEET_PROMPT_VERSION", "v2"),
-        has_api_key=bool(
+    generator = setting("STUDY_SHEET_GENERATOR", "claude")
+    if generator == "gemini":
+        has_api_key = bool(os.getenv("GEMINI_API_KEY"))
+    else:
+        has_api_key = bool(
             os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN")
-        ),
+        )
+    return Settings(
+        generator=generator,
+        claude_model=setting("CLAUDE_MODEL", "claude-opus-5-5"),
+        # Free tier of Google AI Studio. The main model is often busy (HTTP 503)
+        # or out of quota (429); the lighter one then takes over.
+        gemini_model=setting("GEMINI_MODEL", "gemini-3.5-flash"),
+        gemini_fallback_model=setting("GEMINI_FALLBACK_MODEL", "gemini-3.5-flash-lite"),
+        prompt_version=setting("STUDY_SHEET_PROMPT_VERSION", "v2"),
+        has_api_key=has_api_key,
         # Saved sheets live outside Git: data/ is ignored, like local courses.
         db_path=Path(setting("STUDY_SHEET_DB", str(BACKEND_DIR / "data" / "sheets.db"))),
         fixture_path=Path(setting("STUDY_SHEET_FIXTURE", str(DEFAULT_FIXTURE))),

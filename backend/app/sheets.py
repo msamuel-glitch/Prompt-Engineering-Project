@@ -18,6 +18,7 @@ from app.generation import (
     ClaudeSheetGenerator,
     FakeSheetGenerator,
     FixtureSheetGenerator,
+    GeminiSheetGenerator,
     GenerationError,
     SheetGenerator,
 )
@@ -49,22 +50,29 @@ def get_generator() -> SheetGenerator:
             return FixtureSheetGenerator(settings.fixture_path)
         except GenerationError as error:
             raise HTTPException(500, str(error)) from error
-    if settings.generator != "claude":
+    if settings.generator not in ("claude", "gemini"):
         raise HTTPException(
             500,
-            'STUDY_SHEET_GENERATOR must be "claude", "fixture" or "fake" in '
-            "backend/.env.",
+            'STUDY_SHEET_GENERATOR must be "claude", "gemini", "fixture" or "fake" '
+            "in backend/.env.",
         )
     if not settings.has_api_key:
+        key_name = "GEMINI_API_KEY" if settings.generator == "gemini" else "ANTHROPIC_API_KEY"
         raise HTTPException(
             503,
-            "No Anthropic API key: set ANTHROPIC_API_KEY in backend/.env, or set "
+            f"No API key: set {key_name} in backend/.env, or set "
             "STUDY_SHEET_GENERATOR=fake to try the app without AI.",
         )
     try:
         template = load_prompt("study-sheet", settings.prompt_version)
     except PromptNotFoundError as error:
         raise HTTPException(500, str(error)) from error
+    if settings.generator == "gemini":
+        return GeminiSheetGenerator(
+            [settings.gemini_model, settings.gemini_fallback_model],
+            template,
+            settings.prompt_version,
+        )
     return ClaudeSheetGenerator(
         settings.claude_model, template, settings.prompt_version
     )
