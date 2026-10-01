@@ -1,0 +1,1066 @@
+/* Components. Tokens and base elements live in index.css, print in print.css. */
+
+/* --- Site shell ---------------------------------------------------------- */
+
+.site {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.brand:hover {
+  background: none;
+  color: var(--accent);
+}
+
+.brand-mark {
+  width: 1.1rem;
+  height: 1.35rem;
+  border-radius: 3px;
+  background: var(--accent);
+  box-shadow: 0.22rem -0.18rem 0 -0.05rem var(--accent-soft),
+    0.22rem -0.18rem 0 0 var(--accent);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-right: auto;
+}
+
+.nav-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+  font-weight: 500;
+}
+
+.nav-tab:hover:not(:disabled) {
+  background: var(--surface-sunken);
+  color: var(--ink);
+}
+
+.nav-tab[data-active="true"] {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.nav-count {
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+}
+
+.nav-tab[data-active="true"] .nav-count {
+  background: #fff;
+  color: var(--accent);
+}
+
+.header-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.api-status,
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+}
+
+.api-status::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--ink-faint);
+}
+
+.api-status[data-status="ok"] {
+  color: var(--ok);
+}
+
+.api-status[data-status="ok"]::before {
+  background: var(--ok);
+}
+
+.api-status[data-status="unreachable"] {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.api-status[data-status="unreachable"]::before {
+  background: var(--danger);
+}
+
+.mode-badge[data-mode="claude"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.mode-badge[data-mode="fixture"],
+.mode-badge[data-mode="fake"] {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.mode-badge[data-mode="paste"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.site-main {
+  flex: 1;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: var(--space-4);
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+/* --- Page heads ---------------------------------------------------------- */
+
+.page-head {
+  margin: 0 0 var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.page-head h1 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.75rem;
+}
+
+.page-lead {
+  max-width: 44rem;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* --- Home ---------------------------------------------------------------- */
+
+.hero {
+  padding: var(--space-6) 0 var(--space-6);
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  margin: 0 0 var(--space-4);
+  font-size: clamp(3rem, 11vw, 5.5rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.hero-lead {
+  max-width: 38rem;
+  margin: 0 auto var(--space-5);
+  color: var(--ink-soft);
+  font-size: 1.15rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.home-section {
+  margin: var(--space-6) 0 0;
+}
+
+.home-section > h2 {
+  margin: 0 0 var(--space-4);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-3);
+}
+
+.feature-card {
+  padding: var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.feature-card h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 1rem;
+}
+
+.feature-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.step-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: step;
+}
+
+.step-list li {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.step-number {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.step-list h3 {
+  margin: 0 0 var(--space-1);
+  font-size: 1rem;
+}
+
+.step-list p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.limit-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.limit-list li {
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--line-strong);
+  background: var(--paper);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.limit-list strong {
+  color: var(--ink);
+}
+
+/* --- Upload -------------------------------------------------------------- */
+
+.upload-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.upload-form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* Free copy-paste mode: three numbered steps, each revealed when it applies. */
+.paste-steps {
+  display: grid;
+  gap: var(--space-4);
+  margin: var(--space-4) 0 0;
+  padding-left: 1.4rem;
+}
+
+.paste-steps h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 1rem;
+}
+
+.paste-steps p {
+  margin: 0 0 var(--space-2);
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.paste-steps textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--space-2);
+  box-sizing: border-box;
+}
+
+.paste-prompt {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.paste-alternative {
+  margin: var(--space-4) 0 0;
+}
+
+.paste-alternative summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.info-panel {
+  margin: var(--space-5) 0 0;
+  padding: var(--space-4);
+  background: var(--surface-sunken);
+  border-radius: var(--radius);
+}
+
+.info-panel h2 {
+  margin: 0 0 var(--space-3);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.info-panel ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.info-panel li {
+  margin: 0 0 var(--space-2);
+}
+
+.info-panel strong {
+  color: var(--ink);
+}
+
+/* --- Notices ------------------------------------------------------------- */
+
+.notice {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--accent-soft);
+  font-size: 0.9rem;
+}
+
+.notice.warn {
+  border-left-color: var(--warn);
+  background: var(--warn-soft);
+}
+
+.notice.error {
+  border-left-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  background: var(--paper);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+/* --- Library ------------------------------------------------------------- */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+}
+
+.filter-label {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chip {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  box-shadow: none;
+  font-size: 0.85rem;
+}
+
+.chip[data-active="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.chip[data-active="true"]:hover {
+  background: var(--accent-strong);
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* The list item stretches to the row, the card fills it. A height: 100% card
+   inside an auto-sized grid item overflows its row instead, which made the
+   second row of cards sit on top of the first. */
+.sheet-grid > li {
+  display: flex;
+}
+
+.sheet-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.sheet-card[data-open="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.sheet-card h2 {
+  margin: 0 0 var(--space-1);
+  font-size: 1.05rem;
+}
+
+.card-title {
+  padding: 0;
+  color: var(--ink);
+  background: none;
+  border: none;
+  box-shadow: none;
+  font: inherit;
+  text-align: left;
+}
+
+.card-title:hover {
+  background: none;
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.card-meta {
+  margin: 0 0 var(--space-3);
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+}
+
+.card-preview {
+  flex: 1;
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-left: 2px solid var(--line-strong);
+  list-style: none;
+  font-family: var(--font-sheet);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.card-preview li {
+  margin: 0 0 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-preview-more {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.card-source {
+  margin: 0 0 var(--space-3);
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+}
+
+.card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tag-pill {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+.card-untagged {
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+}
+
+.badge {
+  color: var(--warn);
+  font-weight: 600;
+}
+
+.link-button.danger {
+  margin-left: auto;
+  font-size: 0.85rem;
+}
+
+/* --- The sheet, as a page lying on the desk ------------------------------ */
+
+.sheet {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-6);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-sheet);
+  font-size: 1.02rem;
+}
+
+.sheet h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.6rem;
+}
+
+.sheet-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.sheet-section {
+  margin: 0 0 var(--space-5);
+}
+
+.sheet-section h3 {
+  margin: 0 0 var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--accent);
+  font-size: 1.1rem;
+}
+
+.sheet-section ul {
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+.sheet-section li {
+  margin: 0 0 var(--space-1);
+}
+
+.sources {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.warnings {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--warn-soft);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+
+.warnings h3 {
+  margin: 0 0 var(--space-1);
+  color: var(--warn);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.warnings ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.sheet-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+}
+
+.fit-gauge {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border-left: 3px solid var(--ok);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-sunken);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+
+.fit-gauge[data-overflows="true"] {
+  border-left-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.fit-caveat {
+  color: var(--ink-faint);
+}
+
+/* --- Tools above the sheet ----------------------------------------------- */
+
+.sheet-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.tag-editor {
+  display: flex;
+  align-items: end;
+  gap: var(--space-2);
+}
+
+.tag-editor label,
+.sheet-title-field,
+.section-field label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* --- Editor -------------------------------------------------------------- */
+
+.sheet-editor {
+  margin: 0;
+}
+
+.sheet-title-field {
+  margin: 0 0 var(--space-4);
+}
+
+.section-field {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+}
+
+.section-field legend {
+  padding: 0 var(--space-2);
+  color: var(--ink-faint);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.section-field label {
+  margin: 0 0 var(--space-3);
+}
+
+.section-controls {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-3);
+}
+
+.section-controls .danger {
+  margin-left: auto;
+}
+
+.field-label {
+  display: block;
+  margin: 0 0 var(--space-2);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.point-field {
+  display: flex;
+  align-items: start;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+}
+
+.point-field textarea {
+  flex: 1;
+}
+
+.field-warning {
+  margin: var(--space-2) 0 0;
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+}
+
+/* --- Flashcards ---------------------------------------------------------- */
+
+.flashcards {
+  margin: 0;
+}
+
+.flashcards-progress {
+  margin: 0 0 var(--space-2);
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.flashcard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 15rem;
+  padding: var(--space-6);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-sheet);
+  cursor: pointer;
+  transition: box-shadow 150ms ease, transform 150ms ease;
+}
+
+.flashcard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(27, 29, 33, 0.06), 0 14px 38px rgba(27, 29, 33, 0.09);
+}
+
+/* Unanswered, the card is a question alone in the middle of the page. */
+.flashcard[data-revealed="false"] {
+  align-items: center;
+  text-align: center;
+}
+
+.flashcard h3 {
+  margin: 0 0 var(--space-3);
+  font-size: 1.35rem;
+}
+
+.flashcard ul {
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+.flashcard li {
+  margin: 0 0 var(--space-2);
+}
+
+.flashcard-hint {
+  margin: 0;
+  color: var(--ink-faint);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+
+.flashcards-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+}
+
+/* --- Small screens ------------------------------------------------------- */
+
+@media (max-width: 45rem) {
+  .site-bar {
+    gap: var(--space-2);
+  }
+
+  .site-nav {
+    order: 3;
+    width: 100%;
+    margin-right: 0;
+    overflow-x: auto;
+  }
+
+  .header-status {
+    margin-left: auto;
+  }
+
+  .site-main {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .sheet,
+  .flashcard {
+    padding: var(--space-5) var(--space-4);
+  }
+}
+
+/* --- Folders ------------------------------------------------------------- */
+
+.library-layout {
+  display: grid;
+  grid-template-columns: 13rem 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.folder-rail {
+  position: sticky;
+  top: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.folder-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.folder-item:hover:not(:disabled) {
+  background: var(--surface-sunken);
+  color: var(--ink);
+}
+
+.folder-item[data-active="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.folder-icon {
+  flex: none;
+  width: 0.9rem;
+  height: 0.75rem;
+  border-radius: 2px 3px 3px 3px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.folder-count {
+  margin-left: auto;
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.folder-item[data-active="true"] .folder-count {
+  color: var(--accent);
+}
+
+.folder-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.folder-picker select,
+.folder-picker input {
+  padding: 0.2rem 0.4rem;
+  font-size: 0.8rem;
+  max-width: 9rem;
+}
+
+.folder-picker button {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* --- How a sheet was made ------------------------------------------------ */
+
+.card-origin {
+  display: inline-block;
+  margin: 0 0 var(--space-2);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+
+.card-origin[data-tone="warn"] {
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-weight: 600;
+}
+
+.card-origin[data-tone="ok"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0 0 var(--space-3);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 45rem) {
+  .library-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .folder-rail {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}

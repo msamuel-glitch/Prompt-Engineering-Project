@@ -6,9 +6,36 @@ Work through the milestones in order. For each task, agree on the expected resul
 implement a small change, run the relevant checks, and record the outcome here.
 Use focused commits and reviewable pull requests once the team workflow is set up.
 
-Current milestone: **1 — Project definition and repository organization**.
-Next action: resolve the pre-development decisions in
-[PROJECT_BRIEF.md](PROJECT_BRIEF.md) before beginning milestone 2.
+Current milestone: **5–6 — Editing, print, library and study aids**. Sheets are
+saved, edited, filed, printed and revised with flashcards. The quiz is not built,
+no sheet has been generated with a live API key and the prompts have not been
+evaluated. Open items remain in milestones 1–4.
+Next action: without an API budget, run prompts v1 and v2 on S1 and S2 on
+claude.ai through the copy-paste mode, and have a teammate who did not write
+them score the runs (prompt track below).
+
+## Prompt track (in parallel with milestones 2–4)
+
+Prompt experiments do not need the application: they run on course text with
+page or slide markers. See [prompts/](../prompts/README.md).
+
+- [x] Write study-sheet prompt v1 (baseline), its evaluation protocol and a
+      synthetic test course (29 Sept.).
+- [x] Write v2 (structured output), required by the application, which reads
+      its prompt from `prompts/study-sheet/` (29 Sept.).
+- [ ] Choose 2–3 real courses in `data/local/` and list their key points before
+      running any prompt on them.
+- [ ] Evaluate v1 and v2 on the synthetic and real courses; record scores and
+      failures. One v2 run on S1 is recorded in
+      `outputs/study-sheet/v2/`, but outside the protocol: a single run, from a
+      Claude Code session rather than the application, scored by the model that
+      produced it. It needs re-scoring by a teammate and replacing with three
+      real runs once a key exists.
+- [ ] Write the next version from the observed failures and compare it with the
+      previous one on the same courses.
+- [ ] Reproduce and document at least one LLM failure mode relevant to the
+      project, for example invented source references or instructions hidden in
+      an uploaded course.
 
 ## 1. Project definition and repository organization
 
@@ -33,12 +60,16 @@ documentation accurately distinguishes planned features from working software.
 - [ ] Confirm team roles, deadline and the package manager to use.
 - [ ] Verify Python 3.11+, a supported Node.js release satisfying the brief's 20+
       requirement, Git and editor tooling on developer machines.
-- [ ] Establish the team's main branch and branch protection on GitHub. At the
-      initial inspection, the remote exposed only mary; main does not yet exist.
+- [x] Create the shared `main` branch from `mary` (29 Sept.).
+- [ ] Make `main` the default branch and require a reviewed pull request to merge
+      into it (repository owner, in the GitHub settings).
 - [ ] Set up a GitHub Projects board with Todo, In progress, In review and Done.
-- [ ] Scaffold FastAPI with a health endpoint and explicit Python dependencies.
-- [ ] Scaffold React + Vite + TypeScript and commit its dependency lockfile.
-- [ ] Document working install/run/check commands and environment variables.
+- [x] Scaffold FastAPI with a health endpoint and explicit Python dependencies
+      (pip and a virtual environment, pinned requirements files).
+- [x] Scaffold React + Vite + TypeScript and commit its dependency lockfile
+      (npm, package-lock.json).
+- [x] Document working install/run/check commands and environment variables
+      (backend/README.md and frontend/README.md; no variables needed yet).
 - [ ] Configure an Anthropic key with a spending limit, and collect 6–10 local
       sample courses without committing them.
 
@@ -48,46 +79,61 @@ applications, reach the API health endpoint and build the frontend.
 ## 3. Freeze the data and API contracts
 
 - [ ] Define Pydantic schemas for sheets, sections, source references, flashcards,
-      quizzes and subject tags.
-- [ ] Define how original AI content and student edits are stored and restored.
+      quizzes and subject tags (sheets, sections, source references and subject
+      tags done; flashcards and quizzes to come).
+- [x] Define how original AI content and student edits are stored and restored:
+      both versions are kept, and restoring copies the AI one over the student's.
 - [ ] Agree on confidence scoring, weak-section rules, answer checking and the
       minimum content required for a useful two-page summary.
-- [ ] Define API routes and return schema-valid fake data.
-- [ ] Generate TypeScript types from the OpenAPI schema.
+- [ ] Define API routes and return schema-valid fake data (study-sheet, library,
+      editing and tag routes done with the fake generator; flashcard and quiz
+      routes to come).
+- [x] Generate TypeScript types from the OpenAPI schema.
 
 Completion check: the frontend displays a fake sheet using the agreed API shape;
 the team has one documented contract for each core feature.
 
 ## 4. Build the upload-to-sheet pipeline
 
-- [ ] Extract PDF and PPTX text while preserving titles and page/slide identifiers.
-- [ ] Detect unsupported files, empty extraction and scanned PDFs that need OCR;
+- [x] Extract PDF and PPTX text while preserving titles and page/slide identifiers.
+- [x] Detect unsupported files, empty extraction and scanned PDFs that need OCR;
       communicate the limitation clearly before proceeding with generation.
-- [ ] Implement and evaluate the summary prompt with structured Claude output.
-- [ ] Validate the returned data and source references, then persist the sheet.
-- [ ] Connect upload, extraction, generation and display one link at a time.
+- [ ] Implement and evaluate the summary prompt with structured Claude output
+      (implemented with prompt v2; not evaluated yet).
+- [x] Validate the returned data and source references, then persist the sheet:
+      checks re-run on the current version each time a sheet is read, so an
+      edited sheet never shows the checks of an older one.
+- [x] Connect upload, extraction, generation and display one link at a time.
 
 Completion check: representative PDF and PPTX courses produce saved, readable
 study sheets with traceable source references.
 
 ## 5. Editing, print and subject library
 
-- [ ] Implement text editing, section addition/removal/reordering and restoration
+- [x] Implement text editing, section addition/removal/reordering and restoration
       of the AI version.
-- [ ] Add a consistent visual design and A4 print CSS.
+- [x] Add a consistent visual design and A4 print CSS: tokens and base element
+      styles in `frontend/src/index.css`, composed by `App.css`, with the print
+      stylesheet stripping the on-screen card so the sheet becomes the page.
 - [ ] Verify the two-page target on representative courses and handle overflow
-      after student edits visibly.
-- [ ] Add AI-suggested, editable subject tags and library filtering.
+      after student edits visibly (overflow is estimated and warned about live
+      while editing; the estimate has not been checked against printed courses).
+- [ ] Add AI-suggested, editable subject tags and library filtering (editable
+      tags and filtering done; tags suggested by the AI to come).
 
 Completion check: a student can edit, save, reopen and print a sheet as two A4
 pages, and find it through subject filters.
 
 ## 6. Flashcards and quizzes
 
-- [ ] Generate flashcards from each section.
-- [ ] Generate quizzes and implement the agreed section scoring rules.
+- [x] Generate flashcards from each section: one card per section, its heading
+      asking for its key ideas, with the source pages on the answer.
+- [ ] Generate quizzes and implement the agreed section scoring rules. The quiz
+      is the one study aid the brief asks the AI for, so it needs a working key.
 - [ ] Show review badges on weak sections.
-- [ ] Define when study aids are regenerated or marked outdated after edits.
+- [x] Define when study aids are regenerated or marked outdated after edits:
+      flashcards are derived from the sheet on every render rather than stored,
+      so they are never out of date and there is nothing to regenerate.
 
 Completion check: study aids match their sections and quiz results update the
 appropriate section's review status.
@@ -113,3 +159,11 @@ likely exam questions and course gap detection.
 | Milestone | Result | Next action |
 | --- | --- | --- |
 | 1 | Repository layout and conventions added; README rewritten and project background documented locally. Application implementation has not started. | Resolve pre-development decisions in PROJECT_BRIEF.md, then begin development setup. |
+| 1–2 | 29 Sept.: `main` created, empty test file removed, README completed with the sections required by the course guidelines, project journal started. | Owner: make `main` the default and protected branch. Team: fill in names and roles in the README. |
+| 2–4 | 29 Sept.: backend and frontend skeletons, then the upload-to-sheet flow. It works end to end with the fake generator; the Claude generator is tested against the real SDK with a fake network layer, not yet with a live key. Sheets are not saved. | Add an API key, evaluate prompts v1 and v2, then save sheets in SQLite. |
+| 4–5 | 29 Sept.: sheets saved in SQLite, with the library, subject tags, editing and restoration of the AI version, plus the A4 print stylesheet and a two-page fill estimate. Checked with the fake generator and the test suites; no sheet has been generated by Claude or printed on paper yet. | Add an API key and generate a real sheet, check the two-page estimate in the print preview, then build flashcards. |
+| 6 | 30 Sept.: flashcards derived from the sections, with reveal, navigation and shuffle. No AI call: the brief derives every study aid from the sheet JSON, and only the quiz is specified as AI-generated. | Build the quiz once an API key is available; decide the confidence score and the weak-section rule first. |
+| Prompt track | 30 Sept.: a v2 output on S1 recorded as evidence, and a `fixture` generator that serves it so the application can be shown with real content without a key. It covers the eight key points and avoids the three traps, but it did not come from the application and was scored by its own author. | Re-score it blind, and replace it with three application runs as soon as an API key is available. |
+| 5 | 30 Sept.: the interface becomes a site rather than one page — a RectoVerso header with tabs, a home page stating what the application does and does not do, and the library as cards previewing each sheet's first headings. | Have a student outside the team try it and watch where they hesitate. |
+| 5 | 30 Sept.: folders in the library, and how a sheet was made shown on its card and above the sheet itself. A placeholder was indistinguishable from a real summary, which cost a teammate a wasted reading. | Build the quiz once a key is available. |
+| Prompt track | 30 Sept.: the team decided not to pay for API calls for now. A free copy-paste mode prepares the application's prompt for claude.ai and imports the answer with the same checks; it was tested by importing the recorded S1 sheet, not yet on claude.ai. A second synthetic course, S2, tests prompt injection. `start.bat` starts the whole application on Windows. | Run v1 and v2 on S1 and S2 on claude.ai, three runs each, and have them scored by a teammate who did not write the prompts. |

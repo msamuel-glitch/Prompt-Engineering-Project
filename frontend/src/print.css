@@ -1,0 +1,99 @@
+/* Printing a study sheet as two A4 pages.
+ *
+ * PDF export goes through the browser's own print dialog (window.print), so
+ * this stylesheet is the layout contract: it hides the application around the
+ * sheet and sets the type size the character budget in fit.ts assumes. If the
+ * font size or the page margins change here, change the constants there too. */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  /* Only the sheet is printed, never the site around it. */
+  .site-header,
+  .site-footer,
+  .page-head,
+  .upload-form,
+  .info-panel,
+  .empty-state,
+  .filter-bar,
+  .library-layout,
+  .sheet-grid,
+  .notice,
+  .warnings,
+  .sheet-actions,
+  .sheet-tools,
+  .sheet-editor,
+  .flashcards,
+  .fit-gauge {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .site-main,
+  .page {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* On paper the sheet is the page: none of the card it is on screen. */
+  .sheet {
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 11pt;
+    line-height: 1.35;
+  }
+
+  .sheet h2 {
+    font-size: 16pt;
+    margin: 0 0 0.4rem;
+  }
+
+  .sheet h3 {
+    font-size: 12pt;
+    margin: 0 0 0.2rem;
+  }
+
+  .sheet-meta {
+    font-size: 9pt;
+    color: #444;
+    margin: 0 0 0.8rem;
+  }
+
+  /* A section that would straddle the page break moves down whole instead. */
+  .sheet-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin: 0 0 0.55rem;
+  }
+
+  .sheet ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .sheet li {
+    break-inside: avoid;
+  }
+
+  .sources {
+    font-size: 9pt;
+    color: #444;
+    margin: 0.15rem 0 0;
+  }
+
+  /* The printed sheet is read on paper: URLs after links only add noise. */
+  a[href]::after {
+    content: none;
+  }
+}

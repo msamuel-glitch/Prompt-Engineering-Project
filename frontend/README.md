@@ -1,20 +1,146 @@
 # Frontend
 
-This folder will contain the React + Vite application in TypeScript. It is not
-scaffolded yet.
+The user interface of the application, built with React, Vite and TypeScript.
 
-Planned responsibilities:
+**Current state:** upload a course (PDF or PPTX), read the generated study
+sheet with the pages or slides each section comes from and the warnings of the
+automatic checks, edit it, file it under subject tags, reopen it from the
+library, revise it with flashcards and print it on two A4 pages. The sheet can
+also be downloaded as JSON. No environment variable is needed.
 
-- Course upload and generation progress.
-- Study-sheet rendering, section editing with Tiptap, reordering and restoring
-  the original AI version.
-- A4 print styles and PDF export through window.print().
-- Flashcards, quizzes and section review badges.
-- Subject tags and a filterable library.
+## Setup
 
-During the setup milestone, create the minimal Vite application and document its
-install, development and build commands. Add Tiptap when implementing editing.
-Generate API types from the backend's OpenAPI schema in the contracts milestone.
+Requires Node.js 20.19+ or 22.12+ (the current LTS release works). From this
+`frontend/` folder:
+
+```bash
+npm install
+```
+
+## Run
+
+Start the [backend](../backend/README.md) first, then:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:5173. The header shows "API: connected" when the backend
+answers. During development, Vite forwards every request starting with `/api` to
+the backend on http://127.0.0.1:8000 (see `vite.config.ts`).
+
+Without an API key, the New sheet page shows the free copy-paste mode: prepare the
+prompt for a course, run it on claude.ai, paste the reply back. With a key, the
+same mode stays available below the upload. To try the interface without any
+AI, start the backend with `STUDY_SHEET_GENERATOR=fake` and upload
+`prompts/examples/synthetic_course_regression_fr.pptx`.
+
+On Windows, `start.bat` at the root of the repository starts the backend and the
+site together.
+
+## Check
+
+```bash
+npm test        # unit tests with Vitest
+npm run build   # type-check with TypeScript, then build into dist/
+npm run lint    # lint with oxlint
+```
+
+## API types
+
+`src/api-schema.d.ts` is generated from the backend's OpenAPI schema, so the
+frontend uses the same data shapes as the backend. After changing
+`backend/app/schemas.py`, run this with the backend running and commit the
+result:
+
+```bash
+npm run api:types
+```
+
+The script runs openapi-typescript through `npx` instead of installing it: its
+current version expects TypeScript 5, while this project uses TypeScript 6.
+
+## Structure
+
+| Path | Content |
+| --- | --- |
+| `src/index.css` | Design tokens and base element styles: colours, spacing, buttons, fields |
+| `src/main.tsx` | Entry point that mounts the React application |
+| `src/App.tsx` | The shell: which view is showing, and the state shared between them |
+| `src/Nav.tsx` | Site header: the RectoVerso mark, the tabs, the connection and generator badges |
+| `src/Home.tsx` | Landing page: what the application does, how it works and what it does not do |
+| `src/UploadForm.tsx` | File picker and generate button |
+| `src/CopyPasteFlow.tsx` | Free copy-paste mode: prepare the prompt, run it on claude.ai, import the answer |
+| `src/SheetView.tsx` | Display of a sheet, with the print button and the two-page gauge |
+| `src/SheetEditor.tsx` | Form to rewrite, add, remove and reorder the sections |
+| `src/Flashcards.tsx` | Revision mode: one card per section, reveal and shuffle |
+| `src/cards.ts` | Flashcards derived from a sheet, tested in `cards.test.ts` |
+| `src/Library.tsx` | Saved sheets as cards, each previewing its first headings, narrowed by folder |
+| `src/FolderPicker.tsx` | Files a sheet in a folder, or names a new one |
+| `src/TagEditor.tsx` | Subject tags of the open sheet |
+| `src/edits.ts` | Operations on a sheet as pure functions, tested in `edits.test.ts` |
+| `src/fit.ts` | Two-page fill estimate, tested in `fit.test.ts` |
+| `src/App.css` | Component styles, built on the tokens in `index.css` |
+| `src/print.css` | A4 print layout; its type size matches the constants in `fit.ts` |
+| `src/sources.ts` | Page and slide references ("Pages 3–5, 8"), tested in `sources.test.ts` |
+| `src/api.ts` | Calls to the sheet routes and error messages |
+| `src/api-schema.d.ts` | Generated API types; do not edit by hand |
+| `vite.config.ts` | Vite configuration, including the `/api` forwarding |
+| `package.json`, `package-lock.json` | Dependencies and scripts; commit both |
+
+The project was generated with `npm create vite@latest -- --template react-ts`
+and cleaned of the template's demo content.
+
+## Editing without Tiptap
+
+The project plan lists Tiptap as the editor. The sheet is not rich text: it is
+structured data, a title and a list of sections each holding short key ideas and
+source numbers. Plain form fields map onto that structure directly, one field
+per value, and keep the saved sheet valid against the backend schema by
+construction. Tiptap would add a rich-text document to convert back and forth.
+
+This is a deliberate departure from the plan's tool list, not an oversight. If
+the team wants Tiptap, the place for it is the key-idea fields, and `edits.ts`
+would stay as it is.
+
+## Navigation
+
+The application is one page with four tabs — Home, New sheet, My library and
+Flashcards — plus a fifth for the sheet currently open. Which one shows is a
+piece of state in `App.tsx`; there is no router and therefore no URL per view.
+That is a deliberate trade for a demonstration: no extra dependency, at the cost
+of not being able to link to a view or use the browser's back button. A router
+is the first thing to add if the application outlives the project.
+
+## Visual design
+
+`index.css` holds the tokens — colours, spacing, radii, shadows, two type
+families — and the base styles for buttons and fields. `App.css` only composes
+them, so a change of palette or rhythm happens in one file.
+
+The look is notes on a desk: a warm paper surface, white sheets raised off it,
+an ink-blue accent, and a serif for the study sheet against the system sans of
+the interface around it. **No web fonts**: a demonstration must not depend on
+the network, so the stacks fall back to fonts present on every platform.
+
+Print overrides all of it. `print.css` strips the card — border, shadow,
+padding — so the sheet becomes the page, and fixes the type at 11pt to match
+the character budget in `fit.ts`.
+
+## Flashcards without an AI call
+
+The brief derives every study aid from the stored sheet JSON, and asks the AI
+only for the quiz. A flashcard is therefore a rearrangement of text the model
+already wrote: the section heading becomes the question, its key ideas the
+answer. Deriving them on every render rather than storing them also settles when
+study aids go stale after an edit — they cannot.
+
+## Planned responsibilities
+
+- The quiz, its confidence score and the review badges on weak sections. This is
+  the one study aid that needs a working API key.
+- Subject tags suggested by the AI, on top of the editable ones.
+- A consistent visual identity for the sheet.
 
 The structured sheet drives rendering and editing. Keep Claude credentials in
 the backend; frontend environment variables must not contain secrets.

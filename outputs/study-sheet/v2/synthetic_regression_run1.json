@@ -1,0 +1,102 @@
+{
+  "recorded": {
+    "example": "S1",
+    "prompt_version": "v2",
+    "model": "claude-opus-5",
+    "interface": "Claude Code session, NOT the application calling the API",
+    "settings": "Default session settings. The application would use CLAUDE_MODEL (claude-opus-5-5), effort medium and max_tokens 16000; those were not reproduced here.",
+    "date": "2026-09-30",
+    "runs": 1,
+    "caveat": "The evaluation protocol asks for three runs through the application, with the downloaded JSON as evidence. No API key was available, so this is a single run of the v2 prompt text by a model in a different harness. It shows what the prompt asks for; it does not show that backend/app/generation.py works against the live API. Replace this file with real application output once a key exists."
+  },
+  "course_signature": "sha256:bcc5a73e4a07ae65a2e310762a227a3b5b8731738b3eafba7ec3d074b3ca9be1",
+  "sheet": {
+    "title": "Régression linéaire simple — Statistiques appliquées, séance 4",
+    "sections": [
+      {
+        "title": "Le modèle",
+        "points": [
+          "y = β0 + β1·x + ε, où y est la variable expliquée et x la variable explicative.",
+          "β0 : ordonnée à l'origine, valeur prédite de y quand x = 0.",
+          "β1 : pente, variation moyenne de y quand x augmente d'une unité.",
+          "ε : terme d'erreur, la part de y que x n'explique pas."
+        ],
+        "sources": [
+          3
+        ]
+      },
+      {
+        "title": "Estimation par les moindres carrés ordinaires (MCO)",
+        "points": [
+          "Principe : choisir β0 et β1 qui minimisent la somme des carrés des résidus Σ(yi − ŷi)².",
+          "Résidu : ei = yi − ŷi, écart entre la valeur observée et la valeur prédite.",
+          "Pente estimée : β̂1 = Cov(x, y) / Var(x).",
+          "Ordonnée à l'origine estimée : β̂0 = ȳ − β̂1·x̄.",
+          "La droite estimée passe toujours par le point moyen (x̄, ȳ)."
+        ],
+        "sources": [
+          4
+        ]
+      },
+      {
+        "title": "Exemple : publicité et ventes",
+        "points": [
+          "Budget publicitaire mensuel (x, en k€) et ventes mensuelles (y, en k€) de 10 magasins.",
+          "Droite estimée : ŷ = 12 + 3,5x.",
+          "Pente : 1 k€ de publicité en plus est associé en moyenne à 3,5 k€ de ventes en plus.",
+          "Ordonnée à l'origine : 12 k€ de ventes prédites sans publicité, à interpréter avec prudence si aucun magasin n'a un budget nul."
+        ],
+        "sources": [
+          5
+        ]
+      },
+      {
+        "title": "Qualité de l'ajustement : le R²",
+        "points": [
+          "SCT = Σ(yi − ȳ)² : variabilité totale de y ; SCR = Σ(yi − ŷi)² : variabilité résiduelle.",
+          "R² = 1 − SCR / SCT, compris entre 0 et 1.",
+          "Le R² est la part de la variance de y expliquée par x ; dans l'exemple R² = 0,81, soit 81 %.",
+          "En régression simple, R² = r², le carré du coefficient de corrélation linéaire."
+        ],
+        "sources": [
+          7
+        ]
+      },
+      {
+        "title": "Hypothèses du modèle",
+        "points": [
+          "Linéarité : la relation entre x et y est linéaire.",
+          "Indépendance des erreurs.",
+          "Homoscédasticité : la variance des erreurs est constante.",
+          "Normalité des erreurs, nécessaire pour les tests et les intervalles de confiance."
+        ],
+        "sources": [
+          8
+        ]
+      },
+      {
+        "title": "Tester l'effet de x",
+        "points": [
+          "Hypothèse nulle H0 : β1 = 0, x n'a pas d'effet linéaire sur y.",
+          "Statistique de test : t = β̂1 / se(β̂1), loi de Student à n − 2 degrés de liberté sous H0.",
+          "Si la p-value est inférieure à 0,05, on rejette H0 au seuil de 5 %.",
+          "Dans l'exemple : p < 0,001, l'effet du budget publicitaire est significatif."
+        ],
+        "sources": [
+          9
+        ]
+      },
+      {
+        "title": "Pièges fréquents",
+        "points": [
+          "Corrélation n'est pas causalité : la régression mesure une association.",
+          "Extrapolation : ne pas prédire en dehors de l'intervalle des x observés.",
+          "Valeurs aberrantes : un seul point extrême peut fortement modifier la droite."
+        ],
+        "sources": [
+          10
+        ]
+      }
+    ]
+  }
+}
